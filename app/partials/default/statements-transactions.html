@@ -1,0 +1,116 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<link href="http://glyphsearch.com/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <div class="list-group">
+            <h6 class="list-group-title">Explore</h6>
+            <a href="/statements-earnings" class="list-group-item">Earnings <i
+                    class="icon icon-chevron-right"></i></a>
+            <a href="/statements-transactions" class="list-group-item active">Transactions <i
+                    class="icon icon-chevron-right"></i></a>
+        </div>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary" href="/question/ask"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <section class="panel panel-default">
+            <header class="panel-heading">
+                <h4 class="panel-title">Transactions history</h4>
+            </header>
+            <div class="panel-body form-inline">
+                <div class="form-group">
+                    <div class="dropdown">
+                        <button data-toggle="dropdown" type="button" class="btn btn-default dropdown-toggle">
+                            {{ currentGroupingTitle }}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="" ng-click="selectTransGrouping('day', 'Daily')">Daily</a></li>
+                            <li><a href="" ng-click="selectTransGrouping('week', 'Weekly')">Weekly</a></li>
+                            <li><a href="" ng-click="selectTransGrouping('month', 'Monthly')">Monthly</a></li>
+                        </ul>
+                        <!-- /.dropdown-menu -->
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="text" ng-model="startDate" class="form-control datepicker" placeholder="Start date"
+                           name="date"
+                           id="start-date">
+                    <i class="icon icon-calendar form-control-feedback"></i>
+                </div>
+                <label for="">to</label>
+                <div class="form-group has-feedback">
+                    <input type="text" ng-model="endDate" class="form-control datepicker" placeholder="End date"
+                           name="date" id="end-date"
+                    >
+                    <i class="icon icon-calendar form-control-feedback"></i>
+                </div>
+                <button class="btn btn-primary" type="button" ng-click="transactionsUserSummary()">Filter</button>
+            </div>
+            <script>
+                $(function () {
+                    $("#start-date").datepicker("destroy");
+                    $("#start-date").removeClass("hasDatepicker");
+                    $("#end-date").datepicker("destroy");
+                    $("#end-date").removeClass("hasDatepicker");
+                    $("#start-date").datepicker({
+                        maxDate: 0,
+                        onClose: function (selectedDate) {
+
+                            $("#end-date").datepicker("option", "minDate", selectedDate);
+                        }
+                    });
+                });
+            </script>
+            <script>
+                $(function () {
+                    $("#end-date").datepicker({
+                        maxDate: 0,
+                        onClose: function (selectedDate) {
+                            if (selectedDate != "") {
+                                $("#start-date").datepicker("option", "maxDate", selectedDate);
+                            }
+                        }
+                    });
+                });
+            </script>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th class="text-center">Chats</th>
+                        <th class="text-center">Spendings</th>
+                        <th class="text-center">Deposits</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="transaction in transactionsHistory">
+                        <td>{{ transaction.period_dsa | date:'MMM d, yyyy' }} -
+                            {{ transaction.period_dsz| date:'MMM d, yyyy' }}</td>
+                        <td class="text-center">{{ transaction.chats }}</td>
+                        <td class="text-center">{{ transaction.spendings }}</td>
+                        <td class="text-center">{{ transaction.earnings }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

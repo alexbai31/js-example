@@ -1,0 +1,478 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <button class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</button>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row" ng-show="!showSuccess && !showError">
+        <div class="margin-bottom content-wrapper step-wrapper clearfix">
+
+            <div class="step-wrapper clearfix">
+                <div class="step-block" ng-class="{active: !checkouting}">
+                    <span ng-show="!checkouting">Select Package</span>
+                    <span ng-show="checkouting">{{ selectedPackage.credit_awarded }} Credits ({{ selectedPackage.cost }} USD)</span>
+                </div>
+                <!-- / .step-block active -->
+                <div class="step-block" ng-class="{active:checkouting}">
+                    Secure Checkout
+                </div>
+                <!-- / .step-block -->
+            </div>
+            <!-- / .step-wrapper clearfix -->
+
+        </div>
+        <div class="checkout-top" ng-show="checkouting && !showSuccess && !showError">
+            <i class="icon icon-lock"></i> <b>Checkout</b> - This is a <b>secure 128-bit SSL encrypted payment</b>.
+            You are safe!
+        </div>
+        <!-- / .margin-bottom.content-wrapper -->
+        <section class="panel panel-default" ng-show="!checkouting">
+            <header class="panel-heading">
+                <h4 class="panel-title">Available Packages</h4>
+            </header>
+            <div class="panel-body available-packages">
+                <div class="one-package  margin-bottom" ng-repeat="package in packages"
+                     ng-class="{'package-active': package.featured}">
+                    <p class="wrap-best-value" ng-if="package.featured">
+                                    <span class="best-value">
+                                    best value
+                                    </span> <!-- / .best-value -->
+                    </p>
+                    <!-- / .wrap-best-value -->
+                    <p class="one-package-header">
+                        <span class="sum-credit">{{ package.credit_awarded }}</span> Credits
+                    </p>
+                    <!-- / .one-package-header -->
+                    <div class="one-package-content">
+                        <p class="currency-wrap">
+                                        <span class="currency">
+                                        USD
+                                        </span> <!-- / .currency -->
+                                        <span class="currency-value">
+                                        {{ parseInt(package.cost) }}
+                                        </span> <!-- / .currency-value -->
+                        </p>
+                        <!-- / .currency-wrap -->
+                        <p class="one-package-bonus" ng-if="package.bonus_text != ''">
+                            Included: <span class="one-package-bonus-value">{{ package.bonus_text }}</span>
+                        </p>
+                        <p class="one-package-bonus" ng-if="package.bonus_text == ''" style="color:#bdbdbd;">
+                            No bonus included
+                        </p>
+                        <!-- / .one-package-bonus -->
+                    </div>
+                    <!-- / .one-package-content -->
+                    <div class="one-package-footer" ng-show="selectedPackage != package">
+                        <button class="btn btn-default" type="submit" ng-click="selectPackage(package)">Select package
+                        </button>
+                    </div>
+                    <div class="one-package-footer" ng-show="selectedPackage == package">
+                        <div class="active-package">
+                            <i class="icon icon-check"></i>
+                        </div>
+                        <!-- / .active-package -->
+                    </div>
+                    <!-- / .one-package-footer -->
+                </div>
+                <!-- / .one-package package-active -->
+            </div>
+            <!-- / .available-packages -->
+            <div class="panel-footer">
+                <button ng-disabled="!wasSelected" class="btn btn-primary" ng-click="checkouting=true;">Buy a package
+                </button>
+            </div>
+        </section>
+    </section>
+    <!-- /.layout-row -->
+
+    <!--  /.layout-row -->
+    <section class="layout-row" ng-show="checkouting && !showSuccess && !showError">
+
+        <div class="left-column one-package package-active margin-bottom">
+            <p class="wrap-best-value">
+                            <span class="best-value">
+                            YOUR ORDER
+                            </span> <!-- / .best-value -->
+            </p>
+            <!-- / .wrap-best-value -->
+            <p class="one-package-header">
+                <span class="sum-credit">{{ selectedPackage.credit_awarded }}</span> Credits
+            </p>
+            <!-- / .one-package-header -->
+            <div class="one-package-content">
+                <p class="currency-wrap">
+                                <span class="currency">
+                                USD
+                                </span> <!-- / .currency -->
+                                <span class="currency-value">
+                                {{ parseInt(selectedPackage.cost) }}
+                                </span> <!-- / .currency-value -->
+                </p>
+                <!-- / .currency-wrap -->
+                <p class="one-package-bonus" ng-show="selectedPackage.featured">
+                    Included: <span class="one-package-bonus-value">{{ selectedPackage.bonus_text }}</span>
+                </p>
+                <p class="one-package-bonus" ng-show="!selectedPackage.featured" style="color:#bdbdbd;">
+                    No bonus included
+                </p>
+                <!-- / .one-package-bonus -->
+            </div>
+            <!-- / .one-package-content -->
+        </div>
+        <!-- / .left-column .one-package package-active -->
+        <div class="content">
+            <section class="panel panel-default">
+                <div class="panel-body">
+                    <p ng-if="showCardError">Choose card or add new...</p>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="">Card options:</label>
+                            <div class="group-block pos-right">
+                                <div class="form-group has-feedback left-control-feedback">
+                                    <div class="dropdown">
+                                        <button data-toggle="dropdown" type="button"
+                                                class="btn btn-default dropdown-toggle">
+                                            <span ng-show="selectedCard">
+                                            XXXX XXXX XXXX {{ selectedCard.card_suffix }} <span class="expired-block"
+                                                                                                ng-show="expired">Expired</span>
+                                                </span>
+                                            <span ng-show="!selectedCard">...add new card</span>
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="" ng-click="selectedCard = false;">...add new card </a></li>
+                                            <li ng-repeat="method in methods"><a href="" ng-click="selectCard(method);">XXXX
+                                                XXXX XXXX {{ method.card_suffix }}</a></li>
+                                        </ul>
+                                        <!-- /.dropdown-menu -->
+                                    </div>
+                                    <i class="icon  form-control-feedback"
+                                       ng-class="{'icon-cc-visa': selectedCard.brand == 'Visa', 'icon-cc-mastercard': selectedCard.brand == 'MasterCard'}"></i>
+                                </div>
+                                <div class="form-card form-card-green has-top-16" ng-show="!selectedCard">
+                                    <header class="header-form-card">
+                                        <h4>Add a new Visa card</h4>
+                                        <div class="secure-ssl-connection">Secure SSL connection <i
+                                                class="icon icon-lock"></i></div>
+                                    </header>
+                                    <!-- / .header-form-card -->
+                                    <div class="form-group">
+                                        <label class="title-label">
+                                            Full Name <span>(as it appears on card)</span>
+                                        </label>
+                                        <input type="text" class="form-control" placeholder="Ian Paddington"
+                                               ng-model="cardForm.name">
+                                    </div>
+                                    <!-- / .form-group -->
+                                    <div class="form-group">
+                                        <label class="title-label">
+                                            Card number
+                                        </label>
+                                        <div class="has-feedback">
+                                            <input type="text" class="form-control" placeholder="XXXX XXXX XXXX 3232"
+                                                   ng-model="cardForm.number">
+                                            <i class="icon icon-cc-visa form-control-feedback"></i>
+                                        </div>
+                                    </div>
+                                    <!-- / .form-group -->
+                                    <div class="form-group">
+                                        <div class="form-group-inline pos-left has-right-10">
+                                            <label class="title-label">
+                                                Expiry Month
+                                            </label>
+                                            <div class="dropdown">
+                                                <button data-toggle="dropdown" type="button"
+                                                        class="btn btn-default dropdown-toggle">
+                                                    <span ng-if="!cardForm.exp_month">...choose month </span>
+                                                    <span ng-if="cardForm.exp_month">{{ cardForm.exp_month }} </span>
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="" ng-click="setExpMonth(1)">1</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(2)">2</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(3)">3</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(4)">4</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(5)">5</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(6)">6</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(7)">7</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(8)">8</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(9)">9</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(10)">10</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(11)">11</a></li>
+                                                    <li><a href="" ng-click="setExpMonth(12)">12</a></li>
+                                                </ul>
+                                                <!-- /.dropdown-menu -->
+                                            </div>
+                                        </div>
+                                        <!-- / .form-group-inline -->
+                                        <div class="form-group-inline pos-left has-right-10">
+                                            <label class="title-label">
+                                                Expiry Year
+                                            </label>
+                                            <div class="dropdown">
+                                                <button data-toggle="dropdown" type="button"
+                                                        class="btn btn-default dropdown-toggle">
+                                                    <span ng-if="!cardForm.exp_year">...choose year</span>
+                                                    <span ng-if="cardForm.exp_year">{{ cardForm.exp_year }} </span>
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="" ng-click="setExpYear(2016)">2016</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2017)">2017</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2018)">2018</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2019)">2019</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2020)">2020</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2021)">2021</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2022)">2022</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2023)">2023</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2024)">2024</a></li>
+                                                    <li><a href="" ng-click="setExpYear(2025)">2025</a></li>
+                                                </ul>
+                                                <!-- /.dropdown-menu -->
+                                            </div>
+                                        </div>
+                                        <!-- / .form-group-inline -->
+                                        <div class="form-group-inline form-group-inline-security pos-right">
+                                            <label class="title-label">
+                                                Security Code
+                                            </label>
+                                            <div class="form-control-wrap">
+                                                <input type="text" class="form-control" ng-model="cardForm.cvc">
+                                                <i class="icon icon-credit-card"></i>
+                                                <div class="help-circle" data-tooltip="help">?</div>
+                                            </div>
+                                            <!-- / .form-control-wrap -->
+                                        </div>
+                                        <!-- / .form-group-inline.form-group-inline-security -->
+                                    </div>
+                                    <!-- / .form-group-block -->
+                                </div>
+                                <!-- / .form-card form-card-green -->
+                            </div>
+                            <!-- /.group-block -->
+                        </div>
+                        <div class="form-group" ng-show="!selectedCard">
+
+                            <div class="group-block pos-right clearfix">
+
+
+                                <div class="form-card has-top-16">
+                                    <header class="header-form-card">
+                                        <h4>Add a new billing address</h4>
+                                    </header>
+                                    <!-- / .header-form-card -->
+                                    <div class="form-group">
+                                        <label class="title-label">
+                                            Address <span> (line 1)</span>
+                                        </label>
+                                        <input type="text" class="form-control" value="3600 Joseph Siewick Drive"
+                                               ng-model="billingForm.address1">
+                                    </div>
+                                    <!-- / .form-group -->
+                                    <div class="form-group">
+                                        <label class="title-label">
+                                            Address <span> (line 2)</span>
+                                        </label>
+                                        <input type="text" class="form-control" ng-model="billingForm.address2">
+                                    </div>
+                                    <!-- / .form-group -->
+                                    <div class="form-group">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label class="title-label">
+                                                    City
+                                                </label>
+                                                <input type="text" class="form-control" value="Fairfax"
+                                                       ng-model="billingForm.city">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="title-label">
+                                                    Postal / ZIP Code
+                                                </label>
+                                                <input type="text" class="form-control" value="22033"
+                                                       ng-model="billingForm.zip_code">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label class="title-label">
+                                                    State / Province
+                                                </label>
+                                                <input type="text" class="form-control" value="Virginia"
+                                                       ng-model="billingForm.state">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="title-label">
+                                                    Country
+                                                </label>
+                                                <div class="dropdown">
+                                                    <button data-toggle="dropdown" type="button"
+                                                            class="btn btn-block btn-default dropdown-toggle">
+                                                        <span ng-if="billingForm.country">{{ billingForm.country }}</span>
+                                                        <span ng-if="!billingForm.country">...choose country</span>
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li ng-repeat="countryLine in countries"
+                                                            ng-click="setCountry(countryLine.country)"><a
+                                                                href="">{{ countryLine.country }}</a></li>
+                                                    </ul>
+                                                    <!-- /.dropdown-menu -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--  / .form-group -->
+                                </div>
+                                <!--  / .form-card -->
+                            </div>
+                            <!-- /.group-block -->
+                        </div>
+                        <div class="form-group">
+                            <label for="">Total:</label>
+                            <div class="group-block pos-right clearfix total-amount">
+                                {{ selectedPackage.cost }} USD
+                            </div>
+                            <!-- /.group-block -->
+                        </div>
+                    </form>
+                </div>
+                <footer class="panel-footer">
+                    <button type="submit" class="btn btn-primary" ng-click="buyPackage();">Confirm and Place Order
+                    </button>
+                </footer>
+            </section>
+        </div>
+        <!-- /.content -->
+    </section>
+
+
+    <section class="layout-row" ng-show="showSuccess">
+        <section class="panel panel-thankyou text-center margin-bottom">
+            <div class="panel-body">
+                <h3>Thank you for your purchase!</h3>
+                <p>We have added <b>{{ selectedPackage.credit_awarded }} credits</b> to your account. Use them to learn something new! Your current
+                    account balance is:</p>
+                <p class="number-credits">{{ balance }}<span>Credits</span></p>
+            </div>
+        </section>
+        <div class="row">
+            <section class="panel panel-default col-4">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Hungry for knowledge?</h4>
+                </header>
+                <div class="panel-body clearfix">
+                    <a href="" class="sidebar-right-img container-img-circle">
+                        <img src="images/sidebar-right-img1.jpg">
+                    </a>
+                    <p>All you have to do is <b>ask the right question</b> and our wonderful community will help you
+                        out.</p>
+                </div>
+                <footer class="panel-footer">
+                    <a href="/question/ask" class="btn btn-default">Ask a question</a>
+                </footer>
+            </section>
+            <section class="panel panel-default col-4">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Discover new people</h4>
+                </header>
+                <div class="panel-body clearfix">
+                    <a href="" class="sidebar-right-img container-img-circle">
+                        <img src="images/sidebar-right-img2.jpg">
+                    </a>
+                    <p>Our community is full of amazing people. Browse some of our profile recommendations.</p>
+                </div>
+                <footer class="panel-footer">
+                    <a href="/people" class="btn btn-default">Browse people</a>
+                </footer>
+            </section>
+            <section class="panel panel-default col-4">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Explore new topics</h4>
+                </header>
+                <div class="panel-body clearfix">
+                    <a href="" class="sidebar-right-img container-img-circle">
+                        <img src="images/sidebar-right-img3.jpg">
+                    </a>
+                    <p>More topics, more knowledge. We’ve prepared a list of both popular and interesting topics.</p>
+                </div>
+                <footer class="panel-footer">
+                    <a href="/topics" class="btn btn-default">Browse topics</a>
+                </footer>
+            </section>
+        </div>
+    </section>
+    <!-- /.layout-row -->
+
+        <section class="layout-row" ng-show="showError">
+        <section class="panel panel-thankyou text-center margin-bottom">
+            <div class="panel-body">
+                <h3>Something goes wrong :(</h3>
+                <p>{{ error }}</p>
+                <p>You can <a href="/credit-packages" ng-click="tryAgain()">try again.</a></p>
+
+            </div>
+        </section>
+        <div class="row">
+            <section class="panel panel-default col-4">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Hungry for knowledge?</h4>
+                </header>
+                <div class="panel-body clearfix">
+                    <a href="" class="sidebar-right-img container-img-circle">
+                        <img src="images/sidebar-right-img1.jpg">
+                    </a>
+                    <p>All you have to do is <b>ask the right question</b> and our wonderful community will help you
+                        out.</p>
+                </div>
+                <footer class="panel-footer">
+                    <a href="/question/ask" class="btn btn-default">Ask a question</a>
+                </footer>
+            </section>
+            <section class="panel panel-default col-4">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Discover new people</h4>
+                </header>
+                <div class="panel-body clearfix">
+                    <a href="" class="sidebar-right-img container-img-circle">
+                        <img src="images/sidebar-right-img2.jpg">
+                    </a>
+                    <p>Our community is full of amazing people. Browse some of our profile recommendations.</p>
+                </div>
+                <footer class="panel-footer">
+                    <a href="/people" class="btn btn-default">Browse people</a>
+                </footer>
+            </section>
+            <section class="panel panel-default col-4">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Explore new topics</h4>
+                </header>
+                <div class="panel-body clearfix">
+                    <a href="" class="sidebar-right-img container-img-circle">
+                        <img src="images/sidebar-right-img3.jpg">
+                    </a>
+                    <p>More topics, more knowledge. We’ve prepared a list of both popular and interesting topics.</p>
+                </div>
+                <footer class="panel-footer">
+                    <a href="/topics" class="btn btn-default">Browse topics</a>
+                </footer>
+            </section>
+        </div>
+    </section>
+    <!-- /.layout-row -->
+
+</main>
+<!-- /.container.clearfix -->
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

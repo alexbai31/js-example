@@ -1,0 +1,119 @@
+<!--<div class="landing">
+    <div class="wrapper-landing">
+        <div class="all-landing">
+            <ng-include src="'/app/partials/auth/includes/header.html'"></ng-include>
+
+            <div class="content-landing">
+                <div class="wrap-column-content-landing">
+                    <div class="column-content-landing">
+                        <h3>Great, you’re almost done!</h3>
+
+                        <p>Now that you’ve connected your {{ provider }} account, we need to take care of the security.
+                            Please choose an username and a password for your account.</p>
+                    </div>
+                    <div class="column-content-landing">
+                        <h3>Choose an username and a password</h3>
+
+                        <form class="form-landing" ng-submit="signup()" name="forms.signupForm">
+                            <div role="alert" class="alert alert-danger margin-bottom"
+                                 ng-repeat="(field, error) in errors">{{ error[0] }}</div>
+                            <input class="form-control" type="text" name="username" ng-model="username"
+                                   placeholder="Your username..." required server-error/>
+                            <label class="error" ng-show="forms.signupForm.username.$error.server"
+                                   ng-bind="errors.username"></label>
+                            <input class="form-control" type="password" name="password" ng-model="password"
+                                   placeholder="Your password..." server-error/>
+                            <label class="error" ng-show="forms.signupForm.password.$error.server"
+                                   ng-bind="errors.password"></label>
+                            <input class="form-control" type="password" name="password1" ng-model="password1"
+                                   placeholder="Confirm password..." server-error/>
+                            <label class="error" ng-show="forms.signupForm.password1.$error.server"
+                                   ng-bind="errors.password1"></label>
+                            <button type="submit" class="btn btn-info pos-right"
+                                    ng-disabled="forms.signupForm.$invalid">Signup
+                            </button>
+                        </form>
+                    </div>
+                    <!-- /.column-content-landing -->
+<!--
+                </div>
+                <!-- /.wrap-column-content-landing -->
+<!--
+                <footer class="footer-content-landing">
+                    <p>By authenticating and signing up you indicate that you have read and agree to the <span>Terms of Service.</span>
+                    </p>
+                </footer>
+            </div>
+            <!-- /.content-landing -->
+<!--
+            <div class="text-bottom-landing">Chat with experts about anything</div>
+        </div>
+        <!-- /.all-landing -->
+<!--
+    </div>
+    <!-- /.wrapper-landing -->
+<!--
+    <ng-include src="'/app/partials/auth/includes/footer.html'"></ng-include>
+</div>
+-->
+<div class="landing">
+    <div class="wrapper-landing">
+        <div class="all-landing">
+            <div class="landing-width">
+                <ng-include src="'/app/partials/auth/includes/header.html'"></ng-include>
+                <!-- /.header-landing -->
+                <div class="content-landing">
+                    <div class="wrap-column-content-landing">
+                        <div class="column-content-landing">
+                            <h4>Great, you’re almost done!</h4>
+
+                            <p>Now that you’ve connected your social account, we need to take care of the security.
+                                Please
+                                choose an username and a password for your account.</p>
+                        </div>
+                        <div class="column-content-landing">
+                            <h4>Choose an username and a password</h4>
+
+                            <form class="form-landing" ng-submit="signup()" name="forms.signupForm">
+                                <div class="form-group has-top-16">
+                                    <input class="form-control" type="text" placeholder="Your username..." ng-model="username" required server-error>
+                                    <label class="error" ng-show="errors.username" ng-repeat="error in errors.username">
+                                        {{ error }}
+                                    </label>
+                                </div>
+                                <div class="form-group has-top-16">
+                                    <input class="form-control" type="password" placeholder="Your password..." ng-model="password" required server-error>
+                                    <label class="error" ng-show="errors.password" ng-repeat="error in errors.password">
+                                        {{ error }}
+                                    </label>
+                                </div>
+                                <div class="form-group has-top-16">
+                                    <input class="form-control" type="password" placeholder="Confirm password... " ng-model="password1" required server-error>
+                                    <label class="error" ng-show="errors.password1" ng-repeat="error in errors.password1">
+                                        {{ error }}
+                                    </label>
+                                </div>
+                                <div class="form-group has-top-16">
+                                    <button type="submit"
+                                       class="btn btn-primary pos-right">Register</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.column-content-landing -->
+                    </div>
+                    <!-- /.wrap-column-content-landing -->
+                    <footer class="footer-content-landing">
+                        <p>By authenticating and signing up you indicate that you have read and agree to the <span>Terms of Service.</span>
+                        </p>
+                    </footer>
+                </div>
+                <!-- /.content-landing -->
+                <p class="text-bottom-landing">Chat with experts about anything</p>
+            </div>
+            <!-- /.all-landing -->
+        </div>
+        <!-- /.landing-width -->
+    </div>
+    <ng-include src="'/app/partials/auth/includes/footer.html'"></ng-include>
+    <!-- /.footer-landing -->
+</div>

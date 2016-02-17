@@ -1,0 +1,124 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+
+
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <ng-include src="'/app/partials/default/includes/explore-nav.html'"></ng-include>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <button class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</button>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <section class="panel content-wrapper clearfix">
+            <ul id="panel-tabs" class="nav nav-tabs list-unstyled">
+                <li class="active"><a href=""><i class="icon icon-search"></i> Search people</a></li>
+                <li><a href="" class="no-border"><i class="icon icon-eye"></i> Sort Results</a></li>
+                <!--<li><a href="javascript:void(0)" class="no-border"
+                       ng-click="setFilter({order_by: 'A'}); refreshUsers();">A-Z</a></li>
+                <li><a href="javascript:void(0)" class="no-border"
+                       ng-click="setFilter({order_by: 'Z'}); refreshUsers();">Z-A</a></li>-->
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <form class="form-inline">
+                        <!-- /.form-group -->
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button"
+                                        data-toggle="dropdown">
+                                    {{ currentSection }}
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href=""
+                                           ng-click="refreshRecentUsers()">Recent</a>
+                                    </li>
+                                    <li><a href=""
+                                           ng-click="refreshFollowingUsers()">Following</a>
+                                    </li>
+                                    <li><a href=""
+                                           ng-click="refreshFollowersUsers()">Followers</a>
+                                    </li>
+                                </ul>
+                                <!-- /.dropdown-menu -->
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.form-group -->
+                        <!-- <div class="form-group">
+                            <button type="button" class="btn btn-primary" ng-click="refreshUsers()">Find people</button>
+                        </div> -->
+                        <!-- /.form-group -->
+                        <!-- <div class="form-group">
+                            <a href="/people/search" class="btn btn-link" type="button">Advanced search?</a>
+                        </div> -->
+                        <!-- /.form-group -->
+                    </form>
+                    <!-- /.form-inline -->
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+        </section>
+        <section class="people clearfix" infinite-scroll="loadMore()" infinite-scroll-distance="2">
+            <div class="people-wrapper" ng-repeat="user in users">
+                <div class="people-box">
+                    <div class="media">
+                        <div class="media-left avatar-container">
+                            <div class="is-online"
+                                 ng-class="{online:(user.online_status == 'online'), offline:(user.online_status == 'offline')}">
+
+                            </div>
+                            <a href="/profile/{{ user.user_id }}" class="container-img media-width-lg">
+                                <img ng-src="{{ user.avatar }}">
+                            </a>
+                        </div>
+                        <div class="media-body vertical-media-body">
+                            <h4 class="media-heading"><a href="/profile/{{ user.user_id }}">{{ user.username }}</a> <i
+                                    class="icon icon-shield shield-color" ng-if="user.is_expert"></i></h4>
+
+                            <div class="msg-block">
+                                {{ user.msg_cost }} / msg.
+                            </div>
+                        </div>
+                    </div>
+                    <p class="has-top-12">{{ user.about_me }}</p>
+
+                    <p class="people-info by-text-style" ng-if="user.knows_about.length > 0">
+                        <a class="shield-color"><b>{{ user.knows_about[0].name }}</b></a> <span
+                            ng-if="user.knows_about.length > 1">&amp;</span>
+                        <a href="/profile/{{ user.user_id }}/knowledge"
+                           ng-if="user.knows_about.length > 1"><b>{{ user.knows_about.length - 1 }} more</b></a>
+                    </p>
+
+                    <div>
+                        <a href="javascript:void(0)" ng-click="followUser(user)" class="btn btn-default"
+                           ng-if="!user.is_following && !isSelf(user)">Follow<span
+                                class="btn-count">{{ user.num_followers }}</span></a>
+                        <a href="javascript:void(0)" ng-click="unfollowUser(user)" class="btn btn-primary" ng-if="user.is_following && !isSelf(user)">Unfollow<span
+                                class="btn-count">{{ user.num_followers }}</span></a>
+                        <a href="/chat/{{ user.user_id }}" class="btn btn-chat pos-right"><i class="icon icon-comments"></i></a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </section>
+        <!-- /.wrapper-column -->
+    </section>
+    <!-- /.layout-row -->
+</main>
+<!-- /.container.clearfix -->
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

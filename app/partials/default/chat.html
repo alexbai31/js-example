@@ -1,0 +1,219 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+
+<main class="container" style="height:85%; position:relative;">
+    <section class="chat" style="height:100%;position:relative;">
+        <header class="chat-header clearfix">
+            <div class="chat-left-header">
+                <div class="dropdown dropdown-line top-left-dropdown">
+                    <a href="#" class="dropdown-toggle dropdown-chat-profile" ng-click="isExpanded=!isExpanded;">
+                        <img ng-src="{{ user.avatar }}">
+                        <span>
+                            {{ user.username }}
+                            <i class="icon icon-chevron-down" ng-show="!isExpanded;"></i>
+                            <i class="icon icon-chevron-up" ng-show="isExpanded;"></i>
+                        </span>
+                    </a>
+                    <!-- /.dropdown-toggle.dropdown-link-header -->
+                    <ul class="dropdown-menu dropdown-menu-right dropdown-menu-angle">
+                        <li>
+                            <a href="#" ng-if="!chat.is_free" ng-click="addToFree()" tabindex="-1">Add to free chat</a>
+                            <a href="#" ng-if="chat.is_free" ng-click="removeFromFree()" tabindex="-1">Remove from free chat</a>
+                        </li>
+                        <li><a href="/profile/{{ user.user_id }}" tabindex="-1">View profile</a></li>
+                        <li>
+                            <a href="#" ng-if="!user.is_following" ng-click="followUser()" tabindex="-1">Follow user</a>
+                            <a href="#" ng-if="user.is_following" ng-click="unfollowUser()" tabindex="-1">Unfollow
+                                user</a>
+                        </li>
+                        <li>
+                            <a href="#" ng-if="user.rated==0 || user.rated=='not rated'" ng-click="voteUp()"
+                               tabindex="-1">Like user</a>
+                            <a href="#" ng-if="user.rated==1" ng-click="voteDown()" tabindex="-1">Dislike user</a>
+                        </li>
+                        <li>
+                            <a href="#" ng-click="blockUser()" ng-if="!chat.is_block" tabindex="-1">Block user</a>
+                            <a href="#" ng-click="unblockUser()" ng-if="chat.is_block" tabindex="-1">Unblock user</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-menu.dropdown-menu-right.dropdown-menu-angle -->
+                </div>
+                <!-- /.dropdown.dropdown-inline -->
+                <div class="wrapper-star">
+                    <a href="" ng-click="favoriteUser()" ng-if="!chat.is_important"><i class="icon icon-star"></i></a>
+                    <a href="" class="active" ng-click="unfavoriteUser()" ng-if="chat.is_important"><i
+                            class="icon icon-star"></i></a>
+                </div>
+                <!-- /.wrapper-star -->
+            </div>
+            <!-- /.chat-left-header -->
+            <div class="link-header-chat chat-right-header">
+                <ul>
+                    <li ng-show="loggedUser.profile.is_expert && paidChat" ng-click="paidChat=!paidChat;"><a href=""><i
+                            class="icon icon-dollar"></i> <span>Switch to free chat</span></a></li>
+                    <li ng-show="loggedUser.profile.is_expert && !paidChat" ng-click="paidChat=!paidChat;"><a href=""><i
+                            class="icon icon-dollar"></i> <span>Switch to paid chat</span></a></li>
+                    <li>
+                        <a href="/credits">
+                            <i class="icon icon-credit-card "></i>
+                            <span>Buy Credits ({{ loggedUser.available_credit }})</span>
+                        </a>
+                    </li>
+                    <li><a href="" ng-click="closeChat()"><i class="icon icon-close "></i> <span>Close chat</span> </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.link-header-chat.chat-right-header -->
+        </header>
+        <!-- /.chat-header.clearfi -->
+        <div class="chat-content" style="padding-bottom: 160px; overflow-y: scroll; height: 100%; z-index:1; ">
+            <!--<div role="alert" class="alert alert-danger alert-dismissible margin-bottom">
+                <button aria-label="Close" data-dismiss="alert" class="close" type="button">
+                <i class="icon icon-time-circle-o"></i>
+                </button>
+                You have run out of credits. <b>Buy credits to continue this chat.</b>
+            </div>-->
+            <!-- /.alert.alert-danger.alert-dismissible.margin-bottom -->
+            <div role="alert" class="alert alert-success margin-bottom" ng-show="showLoading">
+                Loading messages...
+            </div>
+            <div role="alert" class="alert alert-info alert-dismissible margin-bottom">
+                <button aria-label="Close" data-dismiss="alert" class="close" type="button">
+                    <i class="icon icon-close-circle-o "></i>
+                </button>
+                Each message you send will cost <b>50 credits</b>. Your current balance is <b>1,025 credits</b>.
+            </div>
+            <!-- /.alert.alert-danger.alert-dismissible.margin-bottom -->
+            <!-- /.wrap-message -->
+            <div class="wrap-message" ng-repeat="message in messages">
+                <div class="message-data" ng-show="showDate(message)">
+                    <span>{{ message.month|getNameMonth }} {{ message.day }}, {{ message.year }}</span>
+                </div>
+                <div class="message"
+                     ng-class="{'message-right': message.from_user == loggedUser.user_id, 'message-left': message.from_user == user.user_id}">
+                    <i class="arrow-message"></i>
+
+                    <div class="img-chat" ng-if="message.attachment_cropped != null">
+                        <img ng-src="{{ message.attachment_cropped }}" style="cursor: pointer;"
+                             ng-click="preview(message)">
+
+                        <!--<div class="img-chat-size">
+                            4.25Kb
+                        </div>-->
+                    </div>
+                    {{ message.content }}
+                    <div class="data-massege">
+                        <i class="icon"
+                           ng-class="{'icon-check': message.unread && message.from_user == loggedUser.user_id, 'icon-check-all': !message.unread && message.from_user == loggedUser.user_id,}"></i> {{ getTime(message) }}
+
+                    </div>
+                </div>
+            </div>
+            <!-- /.wrap-message -->
+            <div class="wrap-dots" ng-show="isTyping">
+                <div ng-class="{active: animationStepNumber == 1}"></div>
+                <div ng-class="{active: animationStepNumber == 2}"></div>
+                <div ng-class="{active: animationStepNumber == 3}"></div>
+            </div>
+            <!-- /.wrap-dots -->
+        </div>
+        <!-- /.chat-content -->
+        <footer class="chat-footer" style="position:absolute; bottom: 0px; z-index: 2">
+            <div class="camera-block">
+                <a href="" class="icon icon-camera" data-toggle="modal" data-target="#photoModal"></a>
+
+            </div>
+            <form class="form-chat">
+                <div ng-class="{'error-table': errorForm}">
+
+                    <div>
+                        <input ng-model="message" type="text" class="form-control" style="padding-right: 50px;"
+                               placeholder="click here to start a chat with the user">
+
+                        <div class="letter">{{ lettersCount }}</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" ng-click="newMessage()"
+                                ng-disabled="errorForm || (lettersCount == maxCharacters)"><span>Send message </span><i
+                                class="icon icon-comment"></i>
+                        </button>
+                    </div>
+                    <div class="attachment-notification" ng-show="uploadResult.attachmentApproved">
+                        <a href="" data-toggle="modal" data-target="#photoModal">Image attached</a>
+                    </div>
+                </div>
+            </form>
+            <!-- /.form-chat -->
+        </footer>
+        <!-- /.chat-footer -->
+
+    </section>
+    <!-- /.chat -->
+</main>
+<!-- /.container.clearfix -->
+
+<!-- Modal -->
+<div class="modal fade" id="photoModal" data-backdrop="false" tabindex="-1" role="dialog"
+     aria-labelledby="photoModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Picture preview</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class='panel-body' ng-show="uploadResult.previewReady" style="text-align:center;">
+                    <img class="future-picture" src="{{ uploadResult.url }}" alt="...">
+                </div>
+                <div class="panel-body" oi-file="options" ng-show="!uploadResult.previewReady">
+
+                    <div class="upload-basket upload-basket-content">
+                        <p class="upload-basket-lead-title"><b>Drag</b> your image in this box or</p>
+                        <button class="btn btn-primary" id="browse">Browse for image</button>
+                    </div>
+
+                </div>
+
+
+                <!-- /question image -->
+                <input type="file" oi-file="options" style="display:none;" id="uploader" name="file">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearPhoto()">Clear
+                </button>
+                <button type="button" class="btn btn-primary" ng-click="approveImage()">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="previewModal" data-backdrop="false" tabindex="-1" role="dialog"
+     aria-labelledby="previewModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Image preview</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class='panel-body' style="text-align: center;">
+                    <img class="future-picture" src="{{ previewingImage.url }}" alt="...">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>
+

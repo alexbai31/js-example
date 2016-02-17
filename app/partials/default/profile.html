@@ -1,0 +1,470 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<link href="http://glyphsearch.com/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<main class="container">
+    <div class="sidebar-user-top mobile-user">
+        <div class="mobile-user-wrap-img">
+            <a href="" class="container-img">
+                <img ng-src="{{ user.avatar_big }}">
+            </a>
+        </div>
+        <!-- /.mobile-user-wrap-img -->
+        <h3 class="sidebar-user-title">{{ user.username }} <i class="icon icon-shield shield-color"
+                                                              ng-if="user.is_expert"></i></h3>
+
+        <p class="sidebar-contact-user">
+            <span ng-if="user.age != 0">{{ user.age }}, </span> <span ng-if="user.gender == 'M'">Male</span> <span
+                ng-if="user.gender == 'F'">Female</span> &bull;
+            {{ user.location }} &bull; {{ user.num_followers }} Followers &bull;
+            <!-- 49 Likes -->
+        </p>
+        <!-- /.sidebar-contact-user -->
+    </div>
+    <nav class="mobile-profile margin-bottom">
+        <a href="/profile/{{ user.user_id }}" class="link-profile active">View profile</a>
+        <a href="/profile/edit" class="link-profile">Edit profile</a>
+        <a href="/certification" class="link-profile">Get certified</a>
+
+        <div class="link-more-profile dropdown">
+            <a class="dropdown-toggle" href="#">
+                <i class="icon icon-order"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-menu-angle dropdown-menu-top">
+                <li><a tabindex="-1" href="#">Text</a></li>
+            </ul>
+        </div>
+    </nav>
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <div class="sidebar-user-top margin-bottom">
+            <a href="" class="container-img">
+                <img ng-src="{{ user.avatar_big }}">
+            </a> <!-- /.container-img -->
+            <h3 class="online" ng-class="{'online-mean': user.online_status == 'online'}">{{ user.username }} &nbsp;<i
+                    class="icon icon-shield shield-color" ng-if="user.is_expert"></i></h3>
+            <ul class="list-user">
+                <li><span ng-if="user.gender == 'M'"><i class="fa fa-male"></i></span> <span ng-if="user.gender == 'F'"><i
+                        class="fa fa-female"></i></span> <span ng-if="user.age != 0">{{ user.age }}</span> <span
+                        ng-if="user.gender == 'M'">male</span> <span
+                        ng-if="user.gender == 'F'">female</span></li>
+                <li ng-if="user.location">{{ user.location }}</li>
+            </ul>
+            <a href="/chat/{{ user.user_id }}" class="btn btn-success btn-block btn-icon-group" ng-if="!isSelf()"><i
+                    class="icon icon-comments"></i>Start chat
+            </a>
+            <button class="btn btn-block btn-default btn-icon-group" ng-click="followUser()"
+                    ng-if="!user.is_following && !isSelf()">
+                <i class="icon icon-user-add"></i>Follow<span
+                    class="btn-count">{{ user.num_followers }}</span></button>
+            <button class="btn btn-block btn-primary btn-icon-group" ng-click="unfollowUser()"
+                    ng-if="user.is_following && !isSelf()"><i class="icon icon-user-add"></i>Unfollow<span
+                    class="btn-count">{{ user.num_followers }}</span></button>
+        </div>
+        <!-- /.sidebar-user-top -->
+        <div class="list-group">
+            <h6 class="list-group-title">Profile</h6>
+            <a href="/profile/{{ user.user_id }}" class="list-group-item active">View profile <i
+                    class="icon icon-chevron-right"></i></a>
+            <a href="/profile/edit" ng-if="isSelf()" class="list-group-item">Edit profile <i
+                    class="icon icon-chevron-right"></i></a>
+            <a href="/profile/certification" class="list-group-item">Get certified <i
+                    class="icon icon-chevron-right"></i></a>
+        </div>
+        <!-- /.list-group -->
+
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary" href="/question/ask"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <i class="icon icon-close"></i>
+            </button>
+            <i class="icon skimpy-icon info-circle"></i>
+            Complete your profile to appear in the search results! <a href="/profile/edit" class="alert-link">Edit
+            profile now</a>
+        </div>
+    </section>
+    <!-- /.layout-row -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default" ng-if="user.about_me">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">About {{ user.username }}</h4>
+                    </header>
+                    <div class="panel-body about-panel">
+                        <span ng-bind-html="user.about_me">
+
+                        </span>
+
+
+                    </div>
+                    <div class="panel-footer">
+                        <a href="" ng-click="expandAbout();" ng-if="!fullDetails"><b>Expand</b></a>
+                        <a href="" ng-click="collapseAbout();" ng-if="fullDetails"><b>Collapse</b></a>
+                    </div>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading" ng-if="user.is_expert">
+                        <h4 class="panel-title">{{ user.username }}’s Knowledge</h4>
+                    </header>
+                    <ul ng-if="user.is_expert" class="list-group list-unstyled profile-topics-list">
+                        <li class="list-group-item media" ng-repeat="topic in user.topics.knowledge | orderBy:'name'">
+                            <div class="media-left">
+                                <a href="/topic/{{ topic.id }}" class="container-img media-width-sm">
+                                    <img ng-src="{{ topic.image_thumb }}" alt="">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    <a href="/topic/{{ topic.id }}"
+                                       ng-class="{'shield-color': ($first && user.is_expert) }">{{ topic.name }}</a>
+                                    <i class="icon icon-shield shield-color" ng-if="$first && user.is_expert"></i>
+
+                                </h4>
+
+                                <p>Followed by {{ topic.num_followers }} people
+                                    <span class="follow-buttons">
+                                    <span ng-show="!isFollowing(topic)" class="follow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="followTopic(topic)"><i
+                                            class="icon icon-plus-circle-o"></i></a></span>
+                                    <span ng-show="isFollowing(topic)" class="unfollow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="unfollowTopic(topic)"><i
+                                            class="icon icon-minus-circle-o"></i></a></span>
+                                        </span>
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                    <header class="panel-heading">
+                        <h4 class="panel-title">{{ user.username }}’s Interests</h4>
+                    </header>
+                    <ul class="list-group list-unstyled profile-topics-list" ng-if="user.topics.interests.length > 0">
+                        <li class="list-group-item media" ng-repeat="topic in user.topics.interests | orderBy:'name'">
+                            <div class="media-left">
+                                <a href="/topic/{{ topic.id }}" class="container-img media-width-sm">
+                                    <img ng-src="{{ topic.image_thumb }}" alt="">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    <a href="/topic/{{ topic.id }}">{{ topic.name }}</a>
+
+
+                                </h4>
+
+                                <p>Followed by {{ topic.num_followers }} people
+                                    <span class="follow-buttons">
+                                    <span ng-show="!isFollowing(topic)" class="follow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="followTopic(topic)"><i
+                                            class="icon icon-plus-circle-o"></i></a></span>
+                                    <span ng-show="isFollowing(topic)" class="unfollow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="unfollowTopic(topic)"><i
+                                            class="icon icon-minus-circle-o"></i></a></span>
+                                        </span>
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">{{ user.username }}’s Location</h4>
+                    </header>
+                    <ul class="list-group list-unstyled profile-topics-list" ng-if="user.topics.locations.length > 0">
+                        <li class="list-group-item media" ng-repeat="topic in user.topics.locations | orderBy:'name'">
+                            <div class="media-left">
+                                <a href="/topic/{{ topic.id }}" class="container-img media-width-sm">
+                                    <img ng-src="{{ topic.image_thumb }}" alt="">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    <a href="/topic/{{ topic.id }}">{{ topic.name }}</a>
+
+
+                                </h4>
+
+                                <p>Followed by {{ topic.num_followers }} people
+                                    <span class="follow-buttons">
+                                    <span ng-show="!isFollowing(topic)" class="follow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="followTopic(topic)"><i
+                                            class="icon icon-plus-circle-o"></i></a></span>
+                                    <span ng-show="isFollowing(topic)" class="unfollow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="unfollowTopic(topic)"><i
+                                            class="icon icon-minus-circle-o"></i></a></span>
+                                        </span>
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">{{ user.username }}’s Employment</h4>
+                    </header>
+                    <ul class="list-group list-unstyled profile-topics-list" ng-if="user.topics.employment.length > 0">
+                        <li class="list-group-item media" ng-repeat="topic in user.topics.employment | orderBy:'name'">
+                            <div class="media-left">
+                                <a href="/topic/{{ topic.id }}" class="container-img media-width-sm">
+                                    <img ng-src="{{ topic.image_thumb }}" alt="">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    <a href="/topic/{{ topic.id }}">{{ topic.name }}</a>
+
+
+                                </h4>
+
+                                <p>Followed by {{ topic.num_followers }} people
+                                    <span class="follow-buttons">
+                                    <span ng-show="!isFollowing(topic)" class="follow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="followTopic(topic)"><i
+                                            class="icon icon-plus-circle-o"></i></a></span>
+                                    <span ng-show="isFollowing(topic)" class="unfollow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="unfollowTopic(topic)"><i
+                                            class="icon icon-minus-circle-o"></i></a></span>
+                                        </span>
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">{{ user.username }}’s Education</h4>
+                    </header>
+                    <ul class="list-group list-unstyled profile-topics-list" ng-if="user.topics.education.length > 0">
+                        <li class="list-group-item media" ng-repeat="topic in user.topics.education | orderBy:'name'">
+                            <div class="media-left">
+                                <a href="/topic/{{ topic.id }}" class="container-img media-width-sm">
+                                    <img ng-src="{{ topic.image_thumb }}" alt="">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    <a href="/topic/{{ topic.id }}">{{ topic.name }}</a>
+
+
+                                </h4>
+
+                                <p>Followed by {{ topic.num_followers }} people
+                                    <span class="follow-buttons">
+                                    <span ng-show="!isFollowing(topic)" class="follow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="followTopic(topic)"><i
+                                            class="icon icon-plus-circle-o"></i></a></span>
+                                    <span ng-show="isFollowing(topic)" class="unfollow-{{ topic.id }}"><a
+                                            href="javascript:void(0)" ng-click="unfollowTopic(topic)"><i
+                                            class="icon icon-minus-circle-o"></i></a></span>
+                                        </span>
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section id="panel-tabs-1" class="panel panel-default">
+                    <ul class="nav nav-tabs list-unstyled">
+                        <li ng-class="{active: followersTab}"><a href=""
+                                                                 ng-click="followersTab=true;currentPage=1;getFollowers();">Followers
+                            ({{ followersData.total }})</a></li>
+                        <li ng-class="{active: !followersTab}"><a href=""
+                                                                  ng-click="followersTab=false;currentPage=1;getFollowing();">Following
+                            ({{ followingData.total }})</a></li>
+                    </ul>
+                    <div ng-show="followersTab" class="tab-content followers-tab">
+                        <div class="tab-pane tab-pane-content active">
+                            <ul class="basic-grid list-unstyled">
+                                <li ng-repeat="follower in followersData.followers" class="avatar-container">
+                                    <div class="is-online"
+                                         ng-class="{online:(follower.online_status == 'online'), offline:(follower.online_status == 'offline')}">
+
+                                    </div>
+                                    <a href="/profile/{{ follower.user_id }}" class="container-img media-width-sm"><img
+                                            ng-src="{{ follower.avatar }}"></a>
+                                </li>
+                                <li>
+                                    <a href="/profile/followers/{{ user.user_id }}"
+                                       class="btn-add pos-left media-width-sm">
+                                        <span class="container-img"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div ng-show="!followersTab" class="tab-content following-tab">
+                        <div class="tab-pane tab-pane-content active">
+                            <ul class="basic-grid list-unstyled">
+                                <li ng-repeat="followee in followingData.following" class="avatar-container">
+                                    <div class="is-online"
+                                         ng-class="{online:(followee.online_status == 'online'), offline:(followee.online_status == 'offline')}">
+
+                                    </div>
+                                    <a href="/profile/{{ followee.user_id }}" class="container-img media-width-sm"><img
+                                            ng-src="{{ followee.avatar }}"></a>
+                                </li>
+
+                                <li>
+                                    <a href="/profile/following/{{ user.user_id }}"
+                                       class="btn-add pos-left media-width-sm">
+                                        <span class="container-img"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">{{ user.username }}’s Stats</h4>
+                </header>
+                <div class="panel-body content-sidebar-right">
+                    <p ng-if="user.status_message">
+                        “{{ user.status_message|splitStatusMessage }}” says {{ user.username }}
+                    </p>
+                    <table class="stats-table">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="number-stats-table">
+                                    {{ user.last_seen|lastSeenDay }}
+                                    <sup>{{ user.last_seen|lastSeenMonth }}</sup>
+                                </div>
+                                <div>
+                                    Last seen
+                                </div>
+                            </td>
+                            <td>
+                                <div class="number-stats-table">
+                                    {{ user.num_likes }}
+                                </div>
+                                <div ng-if="user.gender=='M'">
+                                    Liked him
+                                </div>
+                                <div ng-if="user.gender=='F'">
+                                    Liked her
+                                </div>
+                                <div ng-if="user.gender=='U'">
+                                    Likes
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- /.stats-table tbody tr -->
+                        <tr>
+                            <td>
+                                <div class="number-stats-table">
+                                    {{ followersData.total }}
+                                </div>
+                                <div>
+                                    Followers
+                                </div>
+                            </td>
+                            <td>
+                                <div class="number-stats-table">
+                                    {{ followingData.total }}
+                                </div>
+                                <div>
+                                    Following
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- /.stats-table tbody tr -->
+                        </tbody>
+                        <!-- /.stats-table tbody -->
+                    </table>
+                    <!-- /.stats-table -->
+                </div>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Show your love</h4>
+                </header>
+                <div class="panel-body content-sidebar-right">
+                    <p>
+                        How do you feel about {{ user.username }}?
+                    </p>
+                    <table class="stats-table text-center">
+                        <tbody>
+                        <tr>
+                            <td colspan="2">
+                                <div class="number-stats-table">
+                                    {{ user.vote }}%
+                                </div>
+                                <div>
+                                    Out of {{ user.num_voted }} votes.
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- /.stats-table.text-center tbody tr -->
+                        <tr>
+                            <td>
+                                <a href="" ng-class="{active: (user.rated==0)}"
+                                   class="table-icon table-icon-color-smile-down" ng-click="voteDown();">
+                                    <i class="icon icon-sad"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="" ng-class="{active: (user.rated==1)}"
+                                   class="table-icon table-icon-color-smile-up" ng-click="voteUp();">
+                                    <i class="icon icon-smile-o"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <!-- /.stats-table.text-center tbody tr -->
+                        </tbody>
+                        <!-- /.stats-table.text-center tbody -->
+                    </table>
+                    <!-- /.stats-table.text-center -->
+                    <p ng-if="user.vote>60">With a rating of <b>{{ user.vote }}%</b> out of {{ user.num_voted }}
+                        votes, {{ user.username }} is a <b>{{ user.vote | popularityString }}</b>.
+                        <!--She has had more than <b>100 amazing conversations</b>.--></p>
+
+                    <p></p>
+                    <a href="/chat/{{ user.user_id }}" ng-if="user.gender=='F'"><b>Start a chat with her?</b></a>
+                    <a href="/chat/{{ user.user_id }}" ng-if="user.gender=='M'"><b>Start a chat with him?</b></a>
+                    <a href="/chat/{{ user.user_id }}" ng-if="user.gender=='U'"><b>Start a chat?</b></a>
+                </div>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">More like {{ user.username }}</h4>
+                </header>
+                <div class="panel-body">
+                    <ul class="basic-grid list-unstyled">
+                        <li ng-repeat="sUser in similarUsers">
+                            <a href="/profile/{{ sUser.user_id }}" class="container-img media-width-lg">
+                                <img src="{{ sUser.avatar }}">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/people/morelike/{{ user.user_id }}" class="btn-add pos-left media-width-lg">
+                                <span class="container-img"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

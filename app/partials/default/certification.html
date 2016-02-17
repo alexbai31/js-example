@@ -1,0 +1,243 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<main class="container">
+    <div class="sidebar-user-top mobile-user">
+        <div class="mobile-user-wrap-img">
+            <a href="" class="container-img">
+                <img ng-src="{{ user.avatar_big }}">
+            </a>
+        </div>
+        <!-- /.mobile-user-wrap-img -->
+        <h3 class="sidebar-user-title">{{ user.username }} <i class="icon icon-shield shield-color"
+                                                              ng-if="user.is_expert"></i></h3>
+
+        <p class="sidebar-contact-user">
+            <span ng-if="user.age != 0">{{ user.age }}, </span> <span ng-if="user.gender == 'M'">Male</span> <span
+                ng-if="user.gender == 'F'">Female</span> &bull;
+            {{ user.location }} &bull; {{ user.num_followers }} Followers &bull;
+            <!-- 49 Likes -->
+        </p>
+        <!-- /.sidebar-contact-user -->
+    </div>
+    <nav class="mobile-profile margin-bottom">
+        <a href="/profile/{{ user.user_id }}" class="link-profile active">View profile</a>
+        <a href="/profile/edit" class="link-profile">Edit profile</a>
+        <a href="/certification" class="link-profile">Get certified</a>
+
+        <div class="link-more-profile dropdown">
+            <a class="dropdown-toggle" href="#">
+                <i class="icon icon-order"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-menu-angle dropdown-menu-top">
+                <li><a tabindex="-1" href="#">Text</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <div class="sidebar-user-top margin-bottom">
+            <a href="" class="container-img">
+                <img ng-src="{{ user.profile.avatar_big }}">
+            </a> <!-- /.container-img -->
+            <h3 class="online" ng-class="{'online-mean': user.online_status == 'online'}">{{ user.username }} &nbsp;<i
+                    class="icon icon-shield shield-color" ng-if="user.is_expert"></i></h3>
+            <ul class="list-user">
+                <li><span ng-if="user.gender == 'M'"><i class="fa fa-male"></i></span> <span ng-if="user.gender == 'F'"><i
+                        class="fa fa-female"></i></span> <span ng-if="user.age != 0">{{ user.age }}</span> <span
+                        ng-if="user.gender == 'M'">male</span> <span
+                        ng-if="user.gender == 'F'">female</span></li>
+                <li ng-if="user.location">{{ user.location }}</li>
+            </ul>
+        </div>
+        <!-- /.sidebar-user-top -->
+        <div class="list-group">
+            <h6 class="list-group-title">Profile</h6>
+            <a href="/profile/{{ user.user_id }}" class="list-group-item">View profile <i
+                    class="icon icon-chevron-right"></i></a>
+            <a href="/profile/edit" class="list-group-item">Edit profile <i
+                    class="icon icon-chevron-right"></i></a>
+            <a href="/profile/certification" class="list-group-item active">Get certified <i
+                    class="icon icon-chevron-right"></i></a>
+        </div>
+        <!-- /.list-group -->
+
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary" href="/question/ask"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+
+
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="alert alert-success alert-dismissible" id="success" role="alert" ng-show="showSuccess">
+            <button type="button" class="close" ng-click="showSuccess=false;">
+                <i class="icon icon-close"></i>
+            </button>
+            <i class="icon icon-done"></i>
+            Certification request successfully submitted.
+        </div>
+        <div class="alert alert-danger alert-dismissible" id="error" role="alert" ng-show="showError">
+            <button type="button" class="close" ng-click="showError=false;">
+                <i class="icon icon-close"></i>
+            </button>
+            <i class="icon icon-done"></i>
+            Oops, something went wrong, please try to resubmit your certificate.
+        </div>
+    </section>
+    <!-- /.layout-row -->
+    <section class="layout-row">
+        <div class="content">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">Submit certification</h4>
+                    </header>
+                    <div class="panel-body">
+                        <p>You can become certified by proving that you have the credentials to discuss one or more
+                            topics. Once you are certified, a special badge will appear on your profile. Simply choose
+                            topics and upload documents to prove your certification. We will review and hopefully
+                            approve your request.</p>
+
+                        <div class="form-group input-and-btn">
+                            <div class="left-control-block">
+                                <input type="text" placeholder="What topics do you know about?" class="form-control"
+                                       ng-model="topicsSearch">
+
+                                <div class="topic-search-result" ng-show="topicsSearchResult.length > 0">
+                                    <a ng-repeat="topic in topicsSearchResult" ng-click="prepareTopic(topic)">
+                                        {{ topic.name }}
+                                    </a>
+
+                                </div>
+                            </div>
+                            <!-- /.left-control-block -->
+                            <button class="btn btn-primary pos-right" ng-click="addTopicToList()">Add</button>
+                        </div>
+                        <ul class="profile-topics-list has-top-16 container-collapsed">
+                            <li class="media" topic_id="5" ng-repeat="topic in topics">
+                                <div class="media-left">
+                                    <a href="/topic/{{ topic.id }}" class="container-img media-width-sm ">
+                                        <img ng-src="{{ topic.image_thumb }}" alt="">
+                                    </a>
+                                </div>
+                                <div class="media-body vertical-media-body">
+                                    <h4 class="media-heading"><a href="/topic/{{ topic.id }}">{{ topic.name }}</a> <a
+                                            href="" ng-click="removeTopic(topic)"><i
+                                            class="icon icon-close-circle-o danger-color"></i></a></h4>
+
+                                    <p>Followed by {{ topic.num_followers }} people</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="row clearfix has-top-30">
+                            <div class="upload-basket upload-basket-content col-6" oi-file="options">
+                                <p class="upload-basket-lead-title"><b>Drag</b> one or more documents in this box</p>
+                                <button class="btn btn-primary" id="browse">Browse for documents</button>
+                            </div>
+                            <input type="file" oi-file="options" style="display:none;" id="uploader" name="file">
+
+                            <div class="col-6">
+                                <h5>Uploaded documents:</h5>
+
+                                <p ng-repeat="file in files"><a href="" class="remove-icon" ng-click="removeFile(file)"><i
+                                        class="icon icon-close-circle-o danger-color"></i></a>&nbsp;{{ file.name }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix has-top-30">
+                            <div class="col-6">
+                                <label>Describe your expertise in a few words:</label>
+                                <textarea class="form-control" ng-model="expertiseDescription"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary has-top-20" ng-click="uploadCertifications()">
+                            Submit certification request
+                        </button>
+                    </div>
+                </section>
+
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">Current certifications</h4>
+                    </header>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><a href="" ng-click="updateCertifications('T')">Topic(s)<i
+                                            class="icon icon-chevron-down icon-cert-sort" ng-if="sortingOn"></i></a>
+                                    </th>
+                                    <th><a href="" ng-click="updateCertifications('D')">Document(s)<i
+                                            class="icon icon-chevron-down icon-cert-sort" ng-if="sortingOn"></i></a>
+                                    </th>
+                                    <th colspan="2"><a href="" ng-click="updateCertifications('S')">Status<i
+                                            class="icon icon-chevron-down icon-cert-sort" ng-if="sortingOn"></i></a>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat-start="certification in certifications">
+                                    <td><h4>{{ certification.topic.name }}</h4></td>
+                                    <td ng-if="certification.documents.length > 1">
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-toggle dropdown-text">Multiple documents <i
+                                                    class="icon icon-right icon-sort"></i></a>
+                                            <ul class="dropdown-menu dropdown-menu-left dropdown-menu-angle dropdown-menu-bottom">
+                                                <li ng-repeat="doc in certification.documents">
+                                                    <a tabindex="-1" href="#">{{ doc.file_url }}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td ng-if="certification.documents.length == 1">
+                                        {{ certification.documents[0].file_url }}
+                                    </td>
+                                    <td ng-if="certification.status == 'pending'">Pending</td>
+                                    <td ng-if="certification.status == 'approved'"><span
+                                            class="success-color">Approved</span></td>
+                                    <td ng-show="certification.status == 'rejected'"><span
+                                            class="danger-color">Rejected</span>
+                                        <a href="#" ng-click="hideResubmit=false;"><b>(See why)</b></a>
+                                    </td>
+                                    <td class="text-right"><a href="" title="Remove certification"
+                                                              ng-click="removeCertification(certification.id)"><i
+                                            class="icon icon-close-circle-o danger-color"></i></a></td>
+                                </tr>
+                                <tr ng-show="certification.status == 'rejected' && !hideResubmit" ng-repeat-end>
+                                    <td colspan="4" class="info-row">
+                                        <p>{{ certification.rejected_reason }}</p>
+
+                                        <p><a href="/profile/certification/{{ certification.id }}/resubmit" ng-click="resubmit(certification.id)"
+                                              class="btn btn-primary">I'm ready to resubmit</a><a
+                                                class="btn btn-link-default pos-right" href="#"
+                                                ng-click="hideResubmit=true;">Later</a></p>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+    </section>
+    <!-- /.layout-row -->
+</main>
+<!-- /.container.clearfix -->
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

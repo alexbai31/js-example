@@ -1,0 +1,192 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <ng-include src="'/app/partials/default/includes/explore-nav.html'"></ng-include>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary" href="/question/ask"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="alert alert-success alert-dismissible" id="success" role="alert" ng-show="showSuccess">
+            <button type="button" class="close" ng-click="showSuccess=false;">
+                <i class="icon icon-close"></i>
+            </button>
+            <i class="icon icon-done"></i>
+            Card successfully submitted.
+        </div>
+        <div class="alert alert-danger alert-dismissible" id="error" role="alert" ng-show="showError">
+            <button type="button" class="close" ng-click="showError=false;">
+                <i class="icon icon-close"></i>
+            </button>
+            <i class="icon icon-done"></i>
+            Oops! {{ error }} Please try to resubmit.
+        </div>
+        <section class="panel panel-default">
+            <header class="panel-heading">
+                <h4 class="panel-title">Cards</h4>
+            </header>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Brand</th>
+                        <th>Details</th>
+                        <th class="text-center">Current</th>
+                        <th class="text-right">Options</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="method in methods | orderBy:'id'">
+                        <td><i class="icon icon-cc-visa" ng-if="method.brand == 'Visa'"></i><i
+                                class="icon icon-cc-mastercard"
+                                ng-if="method.brand == 'MasterCard'"></i> <i
+                                class="icon icon-cc-discover"
+                                ng-if="method.brand == 'Discover'"></i> {{ method.brand }}</td>
+                        <td>
+                            XXXX XXXX XXXX {{ method.card_suffix }}
+                            <span class="expired-block" ng-if="method.is_expired">Expired</span>
+                        </td>
+                        <td class="text-center"><i class="icon icon-check shield-color" ng-if="method.current"></i></td>
+                        <td class="text-right">
+                            <a href="" class="btn btn-primary btn-sm" ng-show="!method.current"
+                               ng-click="makeCurrent(method)">Make current</a>
+                            <a href="payment-methods-edit-card.html" class="btn btn-default btn-sm">Edit</a>
+                            <a href="" class="btn btn-default btn-sm" ng-click="removeMethod(method)">Remove</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="panel panel-default">
+            <header class="panel-heading">
+                <h4 class="panel-title">Add a new payment method</h4>
+            </header>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-card form-card-green has-top-16">
+                        <header class="header-form-card">
+                            <h4>Add a new Visa card</h4>
+                            <div class="secure-ssl-connection">Secure SSL connection <i
+                                    class="icon icon-lock"></i></div>
+                        </header>
+                        <!-- / .header-form-card -->
+                        <div class="form-group">
+                            <label class="title-label">
+                                Full Name <span>(as it appears on card)</span>
+                            </label>
+                            <input type="text" class="form-control" placeholder="Ian Paddington"
+                                   ng-model="cardForm.name">
+                        </div>
+                        <!-- / .form-group -->
+                        <div class="form-group">
+                            <label class="title-label">
+                                Card number
+                            </label>
+                            <div class="has-feedback">
+                                <input type="text" class="form-control" placeholder="XXXX XXXX XXXX 3232"
+                                       ng-model="cardForm.number">
+                                <i class="icon icon-cc-visa form-control-feedback"></i>
+                            </div>
+                        </div>
+                        <!-- / .form-group -->
+                        <div class="form-group">
+                            <div class="form-group-inline pos-left has-right-10">
+                                <label class="title-label">
+                                    Expiry Month
+                                </label>
+                                <div class="dropdown">
+                                    <button data-toggle="dropdown" type="button"
+                                            class="btn btn-default dropdown-toggle">
+                                        <span ng-if="!cardForm.exp_month">...choose month </span>
+                                        <span ng-if="cardForm.exp_month">{{ cardForm.exp_month }} </span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="" ng-click="setExpMonth(1)">1</a></li>
+                                        <li><a href="" ng-click="setExpMonth(2)">2</a></li>
+                                        <li><a href="" ng-click="setExpMonth(3)">3</a></li>
+                                        <li><a href="" ng-click="setExpMonth(4)">4</a></li>
+                                        <li><a href="" ng-click="setExpMonth(5)">5</a></li>
+                                        <li><a href="" ng-click="setExpMonth(6)">6</a></li>
+                                        <li><a href="" ng-click="setExpMonth(7)">7</a></li>
+                                        <li><a href="" ng-click="setExpMonth(8)">8</a></li>
+                                        <li><a href="" ng-click="setExpMonth(9)">9</a></li>
+                                        <li><a href="" ng-click="setExpMonth(10)">10</a></li>
+                                        <li><a href="" ng-click="setExpMonth(11)">11</a></li>
+                                        <li><a href="" ng-click="setExpMonth(12)">12</a></li>
+                                    </ul>
+                                    <!-- /.dropdown-menu -->
+                                </div>
+                            </div>
+                            <!-- / .form-group-inline -->
+                            <div class="form-group-inline pos-left has-right-10">
+                                <label class="title-label">
+                                    Expiry Year
+                                </label>
+                                <div class="dropdown">
+                                    <button data-toggle="dropdown" type="button"
+                                            class="btn btn-default dropdown-toggle">
+                                        <span ng-if="!cardForm.exp_year">...choose year</span>
+                                        <span ng-if="cardForm.exp_year">{{ cardForm.exp_year }} </span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="" ng-click="setExpYear(2016)">2016</a></li>
+                                        <li><a href="" ng-click="setExpYear(2017)">2017</a></li>
+                                        <li><a href="" ng-click="setExpYear(2018)">2018</a></li>
+                                        <li><a href="" ng-click="setExpYear(2019)">2019</a></li>
+                                        <li><a href="" ng-click="setExpYear(2020)">2020</a></li>
+                                        <li><a href="" ng-click="setExpYear(2021)">2021</a></li>
+                                        <li><a href="" ng-click="setExpYear(2022)">2022</a></li>
+                                        <li><a href="" ng-click="setExpYear(2023)">2023</a></li>
+                                        <li><a href="" ng-click="setExpYear(2024)">2024</a></li>
+                                        <li><a href="" ng-click="setExpYear(2025)">2025</a></li>
+                                    </ul>
+                                    <!-- /.dropdown-menu -->
+                                </div>
+                            </div>
+                            <!-- / .form-group-inline -->
+                            <div class="form-group-inline form-group-inline-security pos-right">
+                                <label class="title-label">
+                                    Security Code
+                                </label>
+                                <div class="form-control-wrap">
+                                    <input type="text" class="form-control" ng-model="cardForm.cvc">
+                                    <i class="icon icon-credit-card"></i>
+                                    <div class="help-circle" data-tooltip="help">?</div>
+                                </div>
+                                <!-- / .form-control-wrap -->
+                            </div>
+                            <!-- / .form-group-inline.form-group-inline-security -->
+                        </div>
+                        <!-- / .form-group-block -->
+                    </div>
+                </form>
+            </div>
+            <footer class="panel-footer text-right">
+                <button type="submit" class="btn btn-primary" ng-click="addCard()">Add payment method</button>
+            </footer>
+        </section>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<!-- /.container.clearfix -->
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>
+
+
+<ng-include src="'/app/partials/default/includes/report-modal.html'"></ng-include>
+

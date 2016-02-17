@@ -1,0 +1,132 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <ng-include src="'/app/partials/default/includes/explore-nav.html'"></ng-include>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary" href="/question/ask"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">Notifications</h4>
+                    </header>
+                    <ul class="list-group list-unstyled list-notifications">
+                        <li class="list-group-item" ng-repeat="notification in notifications">
+                            <a ng-href="{{ notification.link }}" class="media"
+                               ng-click="checkNotification(notification, $event)">
+                                <div class="media-left">
+                                                <span class="container-img media-width-sm">
+                                                    <img src="{{ notification.sender_avatar }}">
+                                                </span>
+                                </div>
+                                <div class="media-body">
+                                    <b>{{ notification.sender }}</b> {{ notification.text_notification }}
+                                                <span class="notification-time">
+                                                    <i class="icon icon-user" ng-if="notification.category == 'p'"></i>
+                                                    <i class="icon icon-globe" ng-if="notification.category == 'q'"></i>
+                                                    {{ notification.hours_ago }} hours ago</span>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+                <!--  /.panel -->
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Hungry for knowledge?</h4>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right clearfix">
+                        <div class="sidebar-right-img">
+                            <div class="container-img container-img-circle">
+                                <img src="images/sidebar-right-img1.jpg">
+                            </div>
+                            <!-- /.container-img.container-img-circle -->
+                        </div>
+                        <!-- /.sidebar-right-img -->
+                        <p>All you have to do is <b>ask the right question</b> and our wonderful community will help you
+                            out.</p>
+                    </div>
+                    <!-- /.content-sidebar-right.clearfix -->
+                </div>
+                <footer class="panel-footer">
+                    <a class="btn btn-default" href="">Ask a question</a>
+                </footer>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Discover new people</h4>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right clearfix">
+                        <div class="sidebar-right-img">
+                            <div class="container-img container-img-circle">
+                                <img src="images/sidebar-right-img2.jpg">
+                            </div>
+                            <!-- /.container-img.container-img-circle -->
+                        </div>
+                        <!-- /.sidebar-right-img -->
+                        <p>Our community is full of amazing people. Browse some of our profile recommendations.</p>
+                    </div>
+                    <!-- /.content-sidebar-right.clearfix -->
+                </div>
+                <footer class="panel-footer">
+                    <a class="btn btn-default" href="people.html">Browse people</a>
+                </footer>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Explore new topics</h4>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right clearfix">
+                        <div class="sidebar-right-img">
+                            <div class="container-img container-img-circle">
+                                <img src="images/sidebar-right-img3.jpg">
+                            </div>
+                            <!-- /.container-img.container-img-circle -->
+                        </div>
+                        <!-- /.sidebar-right-img -->
+                        <p>More topics, more knowledge. We’ve prepared a list of both popular and interesting
+                            topics.</p>
+                    </div>
+                    <!-- /.content-sidebar-right.clearfix -->
+                </div>
+                <footer class="panel-footer">
+                    <a class="btn btn-default" href="topics.html">Browse topics</a>
+                </footer>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<!-- /.container.clearfix -->
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>
+
+
+<ng-include src="'/app/partials/default/includes/report-modal.html'"></ng-include>

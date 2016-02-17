@@ -1,0 +1,20 @@
+<div class="column-content-landing" ng-controller="OAuthController">
+    <h4>New to Txtprt? Sign up with...</h4>
+
+    <div class="form-group has-top-16 landing-social">
+        <a href ng-click="oauth_login('facebook')"
+           class="btn btn-fb btn-social btn-icon-group btn-block">
+            <i class="icon skimpy-icon facebook"></i>
+            <span>Connect with Facebook</span>
+        </a>
+        <a href ng-click="oauth_login('google')"
+           class="btn btn-google btn-social btn-icon-group btn-block">
+            <i class="icon icon-google-plus pos-right"></i>
+            <span>Connect with Google</span>
+        </a>
+    </div>
+    <!-- /.landing-social -->
+    <div class="form-group has-top-16">
+        <a href="/signup" class="btn btn-link pos-left">Sign up with email</a>
+    </div>
+</div>

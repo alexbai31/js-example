@@ -1,0 +1,44 @@
+<div class="landing">
+    <div class="wrapper-landing">
+        <div class="all-landing">
+            <ng-include src="'/app/partials/auth/includes/header.html'"></ng-include>
+
+            <div class="content-landing" ng-show="confirmation.status">
+                <div class="wrap-column-content-landing confirmation">
+                    <h2>Email confirmation success!</h2>
+                    <p>Your email address <strong ng-bind="confirmation.email"></strong> is confirmed. <br/>You can access your account below</p>
+                    <button class="btn btn-info" ng-click="location.path('/')">Continue</button>
+                </div> <!-- /.wrap-column-content-landing -->
+                <footer class="footer-content-landing">
+                    <p>By authenticating and signing up you indicate that you have read and agree to the <span>Terms of Service.</span></p>
+                </footer>
+            </div> <!-- /.content-landing -->
+
+            <div class="content-landing" ng-show="confirmation && !confirmation.status">
+                <div class="wrap-column-content-landing confirmation">
+                    <h2>Oops! Something went wrong</h2>
+                    <p>This link is expired or invalid. Return to the homepage and try again.</p>
+                    <button class="btn btn-info" ng-click="location.path('/login')">Continue</button>
+                </div> <!-- /.wrap-column-content-landing -->
+                <footer class="footer-content-landing">
+                    <p>By authenticating and signing up you indicate that you have read and agree to the <span>Terms of Service.</span></p>
+                </footer>
+            </div> <!-- /.content-landing -->
+
+            <div class="content-landing" ng-show="user && !confirmation">
+                <div class="wrap-column-content-landing confirmation">
+                    <h2>You are currently logged into another account</h2>
+                    <p>Please log out first and try again</p>
+                    <button class="btn btn-info" ng-click="location.path('/logout')" style="margin-top: 0.9375rem;">Logout</button>
+                    <button class="btn btn-info" ng-click="location.path('/')">Cancel</button>
+                </div> <!-- /.wrap-column-content-landing -->
+                <footer class="footer-content-landing">
+                    <p>By authenticating and signing up you indicate that you have read and agree to the <span>Terms of Service.</span></p>
+                </footer>
+            </div> <!-- /.content-landing -->
+
+            <div class="text-bottom-landing">Chat with experts about anything</div>
+        </div> <!-- /.all-landing -->
+    </div> <!-- /.wrapper-landing -->
+    <ng-include src="'/app/partials/auth/includes/footer.html'"></ng-include>
+</div>

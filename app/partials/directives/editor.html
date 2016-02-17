@@ -1,0 +1,17 @@
+<div class="textarea-answer editor">
+    <div class="top-textarea-answer">
+        <button class="editor-bold"><i class="icon icon-bold"></i></button>
+        <button class="editor-italic"><i class="icon icon-italic"></i></button>
+        <button class="editor-underline"><i class="icon icon-underline"></i></button>
+        <button class="editor-blockquote"><i class="icon icon-quote-left"></i></button>
+        <button class="editor-list-ol"><i class="icon icon-list-ol"></i></button>
+        <button class="editor-list-ul"><i class="icon icon-list-ul"></i></button>
+        <button class="editor-insert-picture" ><i class="icon icon-picture"></i></button>
+        <input type="file" oi-file="options" class="editor-upload-{{ id }}" name="file">
+    </div>
+    <div class="content" contenteditable="true" tabindex="-1" id="content-{{ id }}" ng-bind-html="init" ng-model="editorModel">
+
+    </div>
+    <input type="hidden"/>
+</div>
+

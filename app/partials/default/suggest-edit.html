@@ -1,0 +1,88 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">What would you like to change? <b class="danger-color">*</b></h4>
+                    </header>
+                    <div class="panel-body">
+                        <textarea class="form-control" placeholder="Your changes here..."
+                                  ng-model="questionForm.questionTitle"></textarea>
+                    </div>
+                    <!-- /question -->
+
+
+                    <header class="panel-heading">
+                        <h4 class="panel-title">Details</h4>
+                    </header>
+                    <div class="panel-body">
+                        <editor id="1" options="optionsEditor" upload-result="editorUploadResult"
+                                editor-model="questionForm.questionDetails"></editor>
+                    </div>
+                    <!-- /question description -->
+
+                    <footer class="panel-footer clearfix">
+                        <a class="btn btn-link-default pos-left" href="#">Cancel?</a>
+                        <button class="btn btn-primary pos-right" type="button" ng-click="submitChanges()">Send
+                        </button>
+                    </footer>
+                </section>
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Asking great questions</h4>
+                </header>
+                <div class="panel-body content-sidebar-right">
+                    <h5>1. Search first, ask second</h5>
+
+                    <p>There’s always a chance other people had the same question as you. Try to <b>search for
+                        answers</b> before asking the questions.</p>
+                    <h5>2. Keep your question clear and simple</h5>
+
+                    <p>Use clear words and keep your question short. You can us the description to provide more
+                        details about your question.</p>
+                    <h5>3. Link to relevant topics</h5>
+
+                    <p>Link your questions to as many topics as you see fit, as long as they are relevant. The more
+                        irrelevant topics you add, more people that won’t know the answer will see it, instead of
+                        those who can help you.</p>
+                    <h5>4. Use images as helpers</h5>
+
+                    <p>Sometimes, an image is worth 1000 words. Add images to your questions in order to make your
+                        questions even clearer.</p>
+                </div>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

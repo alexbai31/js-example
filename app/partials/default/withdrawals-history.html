@@ -1,0 +1,80 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <div class="list-group">
+            <h6 class="list-group-title">Explore</h6>
+            <a href="/withdrawals" class="list-group-item">Withdrawals <i class="icon icon-chevron-right"></i></a>
+            <a href="/withdrawals-history" class="list-group-item active">History <i
+                    class="icon icon-chevron-right"></i></a>
+        </div>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <button class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</button>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">Withdrawal history</h4>
+                    </header>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="withdrawal in withdrawals">
+                                <td>{{ withdrawal.created_date  | date: "MMM dd, yyyy" }}</td>
+                                <td class="text-right">${{ withdrawal.amount }}</td>
+                            </tr>
+
+                            <tr>
+                                <td class="bold">Withdrawn Total</td>
+                                <td class="text-right bold">${{ total }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Available Balance</h4>
+                </header>
+                <div class="panel-body">
+                    <p class="number-credits">{{ availableBalanceCredit }}<sup>Credits</sup><sub>(${{ availableBalanceUSD }})</sub></p>
+                    <p class="text-gray-min">You can withdraw a maximum of {{ availableBalanceUSD }} USD.</p>
+                </div>
+                <footer class="panel-footer">
+                    <a href="/credit-packages" class="btn btn-primary margin-bottom-min">Buy more credits</a>
+                    <a href="/withdrawals" class="btn btn-default">Request withdrawal</a>
+                </footer>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

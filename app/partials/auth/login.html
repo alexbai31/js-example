@@ -1,0 +1,112 @@
+<div class="landing">
+    <div class="wrapper-landing">
+        <div class="all-landing">
+            <div class="landing-width">
+                <ng-include src="'/app/partials/auth/includes/header.html'"></ng-include>
+                <!-- /.header-landing -->
+                <div class="content-landing" ng-show="state==''">
+                    <div class="wrap-column-content-landing">
+                        <div class="column-content-landing">
+                            <h4>Welcome back, let's get started!</h4>
+
+                            <form class="form-landing" ng-submit="login()">
+                                <div ng-show="errors">
+                                    <div role="alert" class="alert alert-danger alert-dismissible margin-bottom"
+                                         ng-repeat="error in errors.__all__">
+                                        <button aria-label="Close" data-dismiss="alert" class="close" type="button">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        {{ error }}
+                                    </div>
+                                </div>
+                                <!-- /.alert.alert-danger.alert-dismissible.margin-bottom -->
+                                <div class="form-group has-top-16">
+                                    <div ng-show="errors">
+                                        <div class="alert alert-danger alert-dismissible margin-bottom"
+                                             ng-repeat="error in errors.username">
+                                            <button aria-label="Close" data-dismiss="alert" class="close" type="button">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            {{ error }}
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" ng-model="username"
+                                           placeholder="Username or email address...">
+                                </div>
+                                <div class="form-group has-top-16">
+                                    <div role="alert" ng-show="errors">
+                                        <div class="alert alert-danger alert-dismissible margin-bottom"
+                                             ng-repeat="error in errors.password">
+                                            <button aria-label="Close" data-dismiss="alert" class="close" type="button">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            {{ error }}
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="password" ng-model="password"
+                                           placeholder="Password... ">
+                                </div>
+                                <div class="form-group has-top-16">
+                                    <a href="/password-reset" class="btn btn-link pos-left">Forgot password</a>
+                                    <button type="submit" class="btn btn-primary pos-right">
+                                        Continue
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <ng-include src="'/app/partials/auth/includes/oauth_section.html'"></ng-include>
+                        <!-- /.column-content-landing -->
+                    </div>
+                    <!-- /.wrap-column-content-landing -->
+                    <footer class="footer-content-landing">
+                        <p>By authenticating and signing up you indicate that you have read and agree to the <span><a href="/terms-and-conditions">Terms of Service.</a> </span>
+                        </p>
+                    </footer>
+                </div>
+
+                <div class="content-landing" ng-show="state == 'email_unconfirmed'">
+                    <div class="wrap-column-content-landing confirmation">
+                        <h2>Login success, but..</h2>
+
+                        <h3>Please confirm your email to continue</h3>
+
+                        <p>A confirmation email has been sent to <a href ng-bind="email"></a>. <br> Please follow the
+                            instructions to confirm your email and continue using Txtprt.</p>
+                        <button class="btn btn-info" ng-click="resend_email()">Resend confirmation email</button>
+                    </div>
+                    <!-- /.wrap-column-content-landing -->
+
+                    <footer class="footer-content-landing">
+                        <p>By authenticating and signing up you indicate that you have read and agree to the <span><a href="/terms-and-conditions">Terms of Service.</a> </span>
+                        </p>
+                    </footer>
+                </div>
+                <!-- /.content-landing -->
+
+                <div class="content-landing" ng-show="state == 'resend_success'">
+                    <div class="wrap-column-content-landing confirmation">
+                        <h2>Confirmation Sent Successfully</h2>
+
+                        <p>A confirmation email has been sent to <a href ng-bind="email"></a>. <br> Please follow the
+                            instructions to confirm your email and continue using Txtprt.</p>
+                        <button class="btn btn-info" ng-click="resend_email()">Resend confirmation email</button>
+                    </div>
+                    <!-- /.wrap-column-content-landing -->
+
+                    <footer class="footer-content-landing">
+                        <p>By authenticating and signing up you indicate that you have read and agree to the <span><a href="/terms-and-conditions">Terms of Service.</a> </span>
+                        </p>
+                    </footer>
+                </div>
+                <!-- /.content-landing -->
+                <p class="text-bottom-landing">Chat with experts about anything</p>
+            </div>
+            <!-- /.landing-width -->
+        </div>
+        <!-- /.all-landing -->
+    </div>
+    <!-- /.wrapper-landing -->
+    <ng-include src="'/app/partials/auth/includes/footer.html'"></ng-include>
+    <!-- Bootstrap JavaScript -->
+    <!--<script src="js/script.js"></script>-->
+</div>

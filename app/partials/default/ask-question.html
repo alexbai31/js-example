@@ -1,0 +1,146 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">What would you like to ask? <b class="danger-color">*</b></h4>
+                    </header>
+                    <div class="panel-body">
+                        <textarea class="form-control" placeholder="Ask your question here..."
+                                  ng-model="questionForm.questionTitle"></textarea>
+                    </div>
+                    <!-- /question -->
+
+                    <header class="panel-heading">
+                        <h4 class="panel-title">What's your question about? <b class="danger-color">*</b></h4>
+                    </header>
+                    <div class="panel-body">
+                        <div class="form-group input-and-btn" style="position:relative;">
+                            <div class="left-control-block">
+                                <input type="text" placeholder="Search for a topic..." class="form-control"
+                                       ng-model="topicsSearch">
+
+                                <div class="topic-search-result" ng-show="topicsSearchResult.length > 0">
+                                    <a ng-repeat="topic in topicsSearchResult" ng-click="prepareTopic(topic)">
+                                        {{ topic.name }}
+                                    </a>
+
+                                </div>
+                            </div>
+                            <!-- /.left-control-block -->
+                            <button class="btn btn-primary pos-right" ng-click="addTopicToList()">Add</button>
+
+
+                        </div>
+                        <ul class="profile-topics-list has-top-16 container-collapsed">
+                            <li class="media" topic_id="{{ topic.id }}"
+                                ng-repeat="topic in questionTopics">
+                                <div class="media-left">
+                                    <a href="/topic/{{ topic.id }}" class="container-img media-width-sm ">
+                                        <img src="{{ topic.image_thumb }}" alt="">
+                                    </a>
+                                </div>
+                                <div class="media-body vertical-media-body">
+                                    <h4 class="media-heading"><a href="/topic/{{ topic.id }}">{{ topic.name }}</a> <a
+                                            href="" ng-click="deleteTopic(topic)"><i
+                                            class="icon icon-close-circle-o danger-color"></i></a></h4>
+
+                                    <p>Followed by {{ topic.num_followers }} people</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /question-topics -->
+
+                    <header class="panel-heading">
+                        <h4 class="panel-title">Describe your question</h4>
+                    </header>
+                    <div class="panel-body">
+                        <editor id="1" options="optionsEditor" upload-result="editorUploadResult"
+                                editor-model="questionForm.questionDetails"></editor>
+                    </div>
+                    <!-- /question description -->
+
+                    <header class="panel-heading">
+                        <h4 class="panel-title">Add an image</h4>
+                    </header>
+                    <div class="panel-body" oi-file="options">
+
+                        <div class="upload-basket upload-basket-content" ng-show="!previewReady">
+                            <p class="upload-basket-lead-title"><b>Drag</b> your image in this box or</p>
+                            <button class="btn btn-primary" id="browse">Browse for image</button>
+                        </div>
+                        <div ng-show="previewReady">
+                            <a href="#" class="thumbnail">
+                                <img src="{{ thumb.tmp_media.file }}" alt="...">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /question image -->
+                    <input type="file" oi-file="options" style="display:none;" id="uploader">
+
+                    <footer class="panel-footer clearfix">
+                        <a class="btn btn-link-default pos-left" href="#">Cancel?</a>
+                        <button class="btn btn-primary pos-right" type="button" ng-click="askQuestion()">Ask now
+                        </button>
+                    </footer>
+                </section>
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Asking great questions</h4>
+                </header>
+                <div class="panel-body content-sidebar-right">
+                    <h5>1. Search first, ask second</h5>
+
+                    <p>There’s always a chance other people had the same question as you. Try to <b>search for
+                        answers</b> before asking the questions.</p>
+                    <h5>2. Keep your question clear and simple</h5>
+
+                    <p>Use clear words and keep your question short. You can us the description to provide more
+                        details about your question.</p>
+                    <h5>3. Link to relevant topics</h5>
+
+                    <p>Link your questions to as many topics as you see fit, as long as they are relevant. The more
+                        irrelevant topics you add, more people that won’t know the answer will see it, instead of
+                        those who can help you.</p>
+                    <h5>4. Use images as helpers</h5>
+
+                    <p>Sometimes, an image is worth 1000 words. Add images to your questions in order to make your
+                        questions even clearer.</p>
+                </div>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

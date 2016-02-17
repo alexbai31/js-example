@@ -1,0 +1,773 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<link href="http://glyphsearch.com/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<main class="container">
+    <div class="sidebar-user-top mobile-user">
+        <div class="mobile-user-wrap-img">
+            <a href="" class="container-img" data-toggle="modal" data-target="#photoModal">
+                <img src="{{ user.avatar_big }}" ng-show="user.avatar_uploaded">
+                <img ng-src="{{ user.avatar }}" ng-show="!user.avatar_uploaded">
+                <i class="icon icon-camera edit-profile-camera"></i>
+            </a>
+        </div>
+        <!-- /.mobile-user-wrap-img -->
+        <h3 class="sidebar-user-title">{{ user.username }} <i class="icon icon-shield shield-color"></i></h3>
+
+        <p class="sidebar-contact-user">
+            <span ng-if="user.age != 0">{{ user.age }} yo, </span> <span ng-if="user.gender == 'M'">Male</span> <span
+                ng-if="user.gender == 'F'">Female</span> &bull; ,
+            {{ location.city }}, {{ location.region }} &bull; {{ user.num_followers }} Followers &bull;
+            <!-- 49 Likes -->
+        </p>
+        <!-- /.sidebar-contact-user -->
+    </div>
+
+    <nav class="mobile-profile margin-bottom">
+        <a href="/profile/{{ user.user_id }}" class="link-profile">View profile</a>
+        <a href="/profile/edit" class="link-profile active">Edit profile</a>
+        <a href="/certification" class="link-profile">Get certified</a>
+
+        <div class="link-more-profile dropdown">
+            <a class="dropdown-toggle" href="#">
+                <i class="icon icon-order"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-menu-angle dropdown-menu-top">
+                <li><a tabindex="-1" href="#">Text</a></li>
+            </ul>
+        </div>
+    </nav>
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <div class="sidebar-user-top margin-bottom">
+            <a href="#" class="container-img edit-avatar" data-toggle="modal" data-target="#photoModal">
+                <img ng-src="{{ user.avatar_big }}" ng-show="user.avatar_uploaded" id="avatarBig">
+                <img ng-src="{{ user.avatar }}" ng-show="!user.avatar_uploaded">
+                <i class="icon icon-camera"></i>
+            </a> <!-- /.container-img -->
+            <h3 class="online" ng-class="{'online-mean': user.online_status == 'online'}">{{ user.username }} &nbsp;<i
+                    class="icon icon-shield shield-color" ng-if="user.is_expert"></i></h3>
+            <ul class="list-user" ng-show="user">
+                <li><span ng-if="user.gender == 'M'"><i class="fa fa-male"></i></span> <span ng-if="user.gender == 'F'"><i class="fa fa-female"></i></span> <span ng-if="user.age != 0">{{ user.age }} yo</span> <span ng-if="user.gender == 'M'">male</span> <span
+                        ng-if="user.gender == 'F'">female</span></li>
+                <li ng-if="user.location">{{ user.location }}</li>
+            </ul>
+            <a href="/chat/{{ user.user_id }}" ng-if="user && !isSelf()" class="btn btn-success btn-block btn-icon-group"><i
+                    class="icon icon-comments"></i>Start chat
+            </a>
+            <button class="btn btn-block btn-default btn-icon-group" ng-click="followUser()" ng-if="user && !user.is_following && !isSelf()">
+                <i class="icon icon-user-add"></i>Follow<span
+                    class="btn-count">{{ user.num_followers }}</span></button>
+            <button class="btn btn-block btn-primary btn-icon-group" ng-click="unfollowUser()"
+                    ng-if="user && user.is_following && !isSelf()"><i class="icon icon-user-add"></i>Unfollow<span
+                    class="btn-count">{{ user.num_followers }}</span></button>
+        </div>
+        <!-- /.sidebar-user-top -->
+        <div class="list-group">
+            <h6 class="list-group-title">Profile</h6>
+            <a href="/profile/{{ user.user_id }}" class="list-group-item">View profile <i
+                    class="icon icon-chevron-right"></i></a>
+            <a href="/profile/edit" class="list-group-item active">Edit profile <i class="icon icon-chevron-right"></i></a>
+            <a href="/profile/certification" class="list-group-item">Get certified <i
+                    class="icon icon-chevron-right"></i></a>
+        </div>
+        <!-- /.list-group -->
+
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary" href="/question/ask"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <i class="icon icon-close"></i>
+            </button>
+            <i class="icon skimpy-icon info-circle"></i>
+            Complete your profile to appear in the search results! <a href="/profile/edit" class="alert-link">Edit
+            profile now</a>
+        </div>
+    </section>
+    <!-- /.layout-row -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">About {{ user.username }}</h4>
+                                    <span class="edit-block" href="">
+                                    <i class="icon icon-close"></i>
+                                    </span>
+                    </header>
+                    <div class="panel-body">
+                        <editor id="user.user_id" options="editorOptions" upload-result="editorUploadResult"
+                                editor-model="userForm.aboutMe" init="user.about_me"></editor>
+                    </div>
+                    <footer class="panel-footer clearfix">
+                        <button type="submit" class="btn btn-danger pos-left" ng-click="cancelDescription()">Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary pos-right" ng-click="updateDescription()">Update
+                        </button>
+                    </footer>
+                    <header class="panel-heading">
+                        <h4 class="panel-title">About {{ user.username }}</h4>
+                    </header>
+                    <div class="panel-body clearfix">
+                        <div class="form-group">
+                            <div class="col-6">
+                                <label for="">My Birthday <span class="error-message"
+                                                                ng-show="userForm.dob.error">{{ userForm.dob.error }}</span></label>
+
+                                <div class="form-group">
+                                    <select class="form-control input-month" ng-model="userForm.dob.month">
+                                        <option value="0">----</option>
+                                        <option value="01">Jan</option>
+                                        <option value="02">Feb</option>
+                                        <option value="03">Mar</option>
+                                        <option value="04">Apr</option>
+                                        <option value="05">May</option>
+                                        <option value="06">Jun</option>
+                                        <option value="07">Jul</option>
+                                        <option value="08">Aug</option>
+                                        <option value="09">Sep</option>
+                                        <option value="10">Oct</option>
+                                        <option value="11">Nov</option>
+                                        <option value="12">Dec</option>
+                                    </select>
+                                    <select class="form-control input-day" ng-model="userForm.dob.day">
+                                        <option value="0">----</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                    </select>
+                                    <select class="form-control input-year" ng-model="userForm.dob.year">
+                                        <option value="0">----</option>
+                                        <option value="1950">1950</option>
+                                        <option value="1951">1951</option>
+                                        <option value="1952">1952</option>
+                                        <option value="1953">1953</option>
+                                        <option value="1954">1954</option>
+                                        <option value="1955">1955</option>
+                                        <option value="1956">1956</option>
+                                        <option value="1957">1957</option>
+                                        <option value="1958">1958</option>
+                                        <option value="1959">1959</option>
+                                        <option value="1960">1960</option>
+                                        <option value="1961">1961</option>
+                                        <option value="1962">1962</option>
+                                        <option value="1963">1963</option>
+                                        <option value="1964">1964</option>
+                                        <option value="1965">1965</option>
+                                        <option value="1966">1966</option>
+                                        <option value="1967">1967</option>
+                                        <option value="1968">1968</option>
+                                        <option value="1969">1969</option>
+                                        <option value="1970">1970</option>
+                                        <option value="1971">1971</option>
+                                        <option value="1972">1972</option>
+                                        <option value="1973">1973</option>
+                                        <option value="1974">1974</option>
+                                        <option value="1975">1975</option>
+                                        <option value="1976">1976</option>
+                                        <option value="1977">1977</option>
+                                        <option value="1978">1978</option>
+                                        <option value="1979">1979</option>
+                                        <option value="1980">1980</option>
+                                        <option value="1981">1981</option>
+                                        <option value="1982">1982</option>
+                                        <option value="1983">1983</option>
+                                        <option value="1984">1984</option>
+                                        <option value="1985">1985</option>
+                                        <option value="1986">1986</option>
+                                        <option value="1987">1987</option>
+                                        <option value="1988">1988</option>
+                                        <option value="1989">1989</option>
+                                        <option value="1990">1990</option>
+                                        <option value="1991">1991</option>
+                                        <option value="1992">1992</option>
+                                        <option value="1993">1993</option>
+                                        <option value="1994">1994</option>
+                                        <option value="1995">1995</option>
+                                        <option value="1996">1996</option>
+                                        <option value="1997">1997</option>
+                                        <option value="1998">1998</option>
+                                        <option value="1999">1999</option>
+                                        <option value="2000">2000</option>
+                                        <option value="2001">2001</option>
+                                        <option value="2002">2002</option>
+                                        <option value="2003">2003</option>
+                                        <option value="2004">2004</option>
+                                        <option value="2005">2005</option>
+                                        <option value="2006">2006</option>
+                                        <option value="2007">2007</option>
+                                        <option value="2008">2008</option>
+                                        <option value="2009">2009</option>
+                                        <option value="2010">2010</option>
+                                        <option value="2011">2011</option>
+                                        <option value="2012">2012</option>
+                                        <option value="2013">2013</option>
+                                        <option value="2014">2014</option>
+                                        <option value="2015">2015</option>
+                                        <option value="2016">2016</option>
+                                        <option value="2017">2017</option>
+                                        <option value="2018">2018</option>
+                                        <option value="2019">2019</option>
+                                    </select>
+                                    <button class="btn btn-primary" ng-click="saveDob()">Done</button>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label for="">My Gender</label>
+
+                                <div class="form-group input-and-btn">
+                                    <div class="left-control-block">
+                                        <select class="form-control" ng-model="userForm.gender">
+                                            <option value="U">----</option>
+                                            <option value="F">Female</option>
+                                            <option value="M">Male</option>
+                                        </select>
+                                    </div>
+                                    <!-- /.left-control-block -->
+                                    <button class="btn btn-primary pos-right" ng-click="saveGender()">Done</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">Location</h4>
+                    </header>
+                    <div class="panel-body clearfix">
+                        <div class="form-group input-and-btn">
+                            <div class="left-control-block">
+                                <input type="text" placeholder="Where do you live?" ng-model="location"
+                                       class="form-control">
+                                <ul ng-show="citiesAutocomplete">
+                                    <li ng-repeat="city in citiesAutocomplete"><a href=""
+                                                                                  ng-click="setCity(city)">{{ city.city }}, {{ city.region }}, {{ city.country }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.left-control-block -->
+                            <button class="btn btn-primary pos-right" type="submit" ng-click="saveLocation()">Add
+                            </button>
+                        </div>
+                        <div class="dropdown form-control-dropdown user-location" ng-show="user.location">
+                            <a href="#" class="dropdown-toggle form-control">
+
+                                {{ user.location }} <i class="icon icon-ellipsis-v"></i>
+                            </a>
+                            <!-- /.dropdown-toggle.dropdown-link-header -->
+                            <ul class="dropdown-menu dropdown-menu-left dropdown-menu-angle dropdown-menu-top">
+                                <li><a href="#" tabindex="-1">Text</a></li>
+                                <li><a href="#" tabindex="-1">Text</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-right.dropdown-menu-angle dropdown-menu-top -->
+                        </div>
+                    </div>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title pos-left" ng-class="{'knowledge-title':certifications.length == 0 }">My
+                            knowledge</h4>
+
+                        <a href="/profile/certification" class="btn btn-default pos-right"
+                           ng-if="certifications.length == 0">Get Certified!</a>
+
+                        <div class="clearfix"></div>
+                    </header>
+
+                    <div class="panel-body clearfix">
+                        <div class="form-group input-and-btn">
+                            <div class="left-control-block">
+                                <input type="text" placeholder="What topics do you know about?"
+                                       class="form-control" ng-model="topicsSearch.knowledge">
+
+                                <ul ng-show="topicsSearchResult.knowledge">
+                                    <li ng-repeat="topic in topicsSearchResult.knowledge">
+                                        <a href=""
+                                           ng-click="setPreSave('knowledge', topic)">{{ topic.name }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.left-control-block -->
+                            <button class="btn btn-primary pos-right" ng-click="createKnowledge()">Add</button>
+                        </div>
+                        <ul class="profile-topics-list has-top-16 container-collapsed">
+                            <li class="media" topic_id="5" topic-type="I" ng-repeat="topic in user.topics.knowledge">
+                                <div class="media-left">
+                                    <a href="/topic/{{ topic.id }}/" class="container-img media-width-sm "><img src="{{ topic.image_thumb }}"></a>
+                                </div>
+                                <div class="media-body vertical-media-body">
+                                    <h4 class="media-heading shield-color" ng-class="{'primary-topic' : topic.primary_topic }"><a href="/topic/{{ topic.user_topic_id }}/" id="knowledgeTopicDefault{{ topic.id }}">{{ topic.name }}</a> <i
+                                            class="icon icon-favorite shield-color" ng-if="topic.primary_topic"></i>
+                                    </h4>
+
+                                    <p>Followed by {{ topic.num_followers }} people</p>
+
+                                    <div class="dropdown dropdown-left dropdown-dots">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="icon icon-ellipsis-v"></i>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <li><a data-tooltip="Make primary" class="make-primary-topic" ng-click="selectDefaultTopic(topic)"><i
+                                                    class="icon icon-favorite"></i></a></li>
+                                            <li><a data-tooltip="Delete" class="delete-topic" ng-click="delThisTopic(topic)"><i
+                                                    class="icon icon-close"></i></a></li>
+                                        </ul>
+                                    </div>
+                                    <p></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <header class="panel-heading">
+                        <h4 class="panel-title">My interests</h4>
+                                    <span href="" class="edit-block">
+                                    <i class="icon icon-edit"></i>
+                                    </span>
+                    </header>
+                    <div class="panel-body clearfix">
+                        <div class="form-group input-and-btn">
+                            <div class="left-control-block">
+                                <input type="text" placeholder="What are you intrested in?" class="form-control"
+                                       ng-model="topicsSearch.interests">
+
+                                <ul ng-show="topicsSearchResult.interests">
+                                    <li ng-repeat="topic in topicsSearchResult.interests">
+                                        <a href=""
+                                           ng-click="setPreSave('interests', topic)">{{ topic.name }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.left-control-block -->
+                            <button class="btn btn-primary pos-right" ng-click="createInterests()">Add</button>
+                        </div>
+                        <ul class="profile-topics-list has-top-16 container-collapsed">
+                            <li class="media" topic_id="5" topic-type="I" ng-repeat="topic in user.topics.interests">
+                                <div class="media-left">
+                                    <a href="/topic/{{ topic.id}}/" class="container-img media-width-sm "><img src="{{ topic.image_thumb }}"></a>
+                                </div>
+                                <div class="media-body vertical-media-body">
+                                    <h4 class="media-heading shield-color" ng-class="{'primary-topic' : topic.primary_topic }"><a href="/topic/{{ topic.user_topic_id }}/" id="interestsTopicDefault{{ topic.id }}">{{ topic.name }}</a> </h4>
+
+                                    <p>Followed by {{ topic.num_followers}} people</p>
+
+                                    <div class="dropdown dropdown-left dropdown-dots">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="icon icon-ellipsis-v"></i>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+
+                                            <li><a data-tooltip="Delete" class="delete-topic" ng-click="delThisTopic(topic)"><i
+                                                    class="icon icon-close"></i></a></li>
+                                        </ul>
+                                    </div>
+                                    <p></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">My locations</h4>
+                                    <span href="" class="edit-block">
+                                    <i class="icon icon-edit"></i>
+                                    </span>
+                    </header>
+                    <div class="panel-body clearfix">
+                        <div class="form-group input-and-btn">
+                            <div class="left-control-block">
+                                <input type="text" placeholder="Where did you live?" class="form-control"
+                                       ng-model="topicsSearch.locations">
+                                <ul ng-show="topicsSearchResult.locations">
+                                    <li ng-repeat="topic in topicsSearchResult.locations">
+                                        <a href=""
+                                           ng-click="setPreSave('locations', topic)">{{ topic.name }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.left-control-block -->
+                            <button class="btn btn-primary pos-right" type="submit" ng-click="createLocations()">Add</button>
+                        </div>
+                        <ul class="profile-topics-list has-top-16 container-collapsed">
+                            <li class="media" topic_id="5" topic-type="I" ng-repeat="topic in user.topics.locations">
+                                <div class="media-left">
+                                    <a href="/topic/{{ topic.id}}/" class="container-img media-width-sm "><img src="{{ topic.image_thumb }}"></a>
+                                </div>
+                                <div class="media-body vertical-media-body">
+                                    <h4 class="media-heading shield-color" ng-class="{'primary-topic' : topic.primary_topic }"><a href="/topic/{{ topic.user_topic_id }}/" id="locationsTopicDefault{{ topic.id }}">{{ topic.name }}</a></h4>
+
+                                    <p>Followed by {{ topic.num_followers }} people</p>
+
+                                    <div class="dropdown dropdown-left dropdown-dots">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="icon icon-ellipsis-v"></i>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <li><a data-tooltip="Delete" class="delete-topic" ng-click="delThisTopic(topic)"><i
+                                                    class="icon icon-close"></i></a></li>
+                                        </ul>
+                                    </div>
+                                    <p></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">My employment</h4>
+                                    <span href="" class="edit-block">
+                                    <i class="icon icon-edit"></i>
+                                    </span>
+                    </header>
+                    <div class="panel-body clearfix">
+                        <div class="form-group input-and-btn">
+                            <div class="left-control-block">
+                                <input type="text" placeholder="Where did you work?" class="form-control"
+                                       ng-model="topicsSearch.employment">
+                                <ul ng-show="topicsSearchResult.employment">
+                                    <li ng-repeat="topic in topicsSearchResult.employment">
+                                        <a href=""
+                                           ng-click="setPreSave('employment', topic)">{{ topic.name }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.left-control-block -->
+                            <button class="btn btn-primary pos-right" ng-click="createEmployment()">Add</button>
+                        </div>
+                        <ul class="profile-topics-list has-top-16 container-collapsed">
+                            <li class="media" topic_id="5" topic-type="I" ng-repeat="topic in user.topics.employment">
+                                <div class="media-left">
+                                    <a href="/topic/{{ topic.id }}/" class="container-img media-width-sm "><img src="{{ topic.image_thumb }}"></a>
+                                </div>
+                                <div class="media-body vertical-media-body">
+                                    <h4 class="media-heading shield-color" ng-class="{'primary-topic' : topic.primary_topic }"><a href="/topic/{{ topic.user_topic_id }}/" id="employmentTopicDefault"{{ topic.id }}>{{ topic.name }}</a></h4>
+
+                                    <p>Followed by {{ topic.num_followers }} people</p>
+
+                                    <div class="dropdown dropdown-left dropdown-dots">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="icon icon-ellipsis-v"></i>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <li><a data-tooltip="Delete" class="delete-topic" ng-click="delThisTopic(topic)"><i
+                                                    class="icon icon-close"></i></a></li>
+                                        </ul>
+                                    </div>
+                                    <p></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">My education</h4>
+                                    <span href="" class="edit-block">
+                                    <i class="icon icon-edit"></i>
+                                    </span>
+                    </header>
+                    <div class="panel-body clearfix">
+                        <div class="form-group input-and-btn">
+                            <div class="left-control-block">
+                                <input type="text" placeholder="Where did you study?" class="form-control"
+                                       ng-model="topicsSearch.education">
+                                <ul ng-show="topicsSearchResult.education">
+                                    <li ng-repeat="topic in topicsSearchResult.education">
+                                        <a href=""
+                                           ng-click="setPreSave('education', topic)">{{ topic.name }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.left-control-block -->
+                            <button class="btn btn-primary pos-right" ng-click="createEducation()">Add</button>
+                        </div>
+                        <ul class="profile-topics-list has-top-16 container-collapsed">
+                            <li class="media" topic_id="5" topic-type="I" ng-repeat="topic in user.topics.education | orderBy:'name'">
+                                <div class="media-left">
+                                    <a href="/topic/{{ topic.id }}/" class="container-img media-width-sm "><img src="{{ topic.image_thumb }}"></a>
+                                </div>
+                                <div class="media-body vertical-media-body">
+                                    <h4 class="media-heading shield-color" ng-class="{'primary-topic' : topic.primary_topic }"><a href="/topic/{{ topic.user_topic_id }}/" id="educationTopicDefault{{ topic.id }}">{{ topic.name }}</a> </h4>
+
+                                    <p>Followed by {{ topic.num_followers }} people</p>
+
+                                    <div class="dropdown dropdown-left dropdown-dots">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="icon icon-ellipsis-v"></i>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <li><a data-tooltip="Delete" class="delete-topic" ng-click="delThisTopic(topic)"><i
+                                                    class="icon icon-close"></i></a></li>
+                                        </ul>
+                                    </div>
+                                    <p></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <style>
+                    /*
+                    #{{ topicDefault }} {
+                        color: green !important;
+                    }
+                    */
+                    .primary-topic a{
+                        color: green;
+                    }
+
+                </style>
+
+                <section id="panel-tabs-1" class="panel panel-default row-position">
+                    <a class="panel-edit edit-block" href="">
+                        <i class="icon icon-edit"></i>
+                    </a>
+                    <ul class="nav nav-tabs list-unstyled">
+                        <li ng-class="{active: followersTab}"><a href="" ng-click="followersTab=true;">Followers
+                            ({{ followers.length }})</a></li>
+                        <li ng-class="{active: !followersTab}"><a href="" ng-click="followersTab=false;">Following
+                            ({{ following.length }})</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane tab-pane-content active">
+                            <ul class="basic-grid list-unstyled">
+                                <li ng-repeat="follower in followers" class="avatar-container">
+                                    <div class="is-online"
+                                         ng-class="{online:(follower.online_status == 'online'), offline:(follower.online_status == 'offline')}">
+
+                                    </div>
+                                    <a href="/profile/{{ follower.user_id }}" class="container-img media-width-sm"><img
+                                            ng-src="{{ follower.avatar }}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">{{ user.username }} Stats</h4>
+                                <span class="edit-block" ng-click="editStatusMessage()">
+                                <i class="icon icon-edit"></i>
+                                </span>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right clearfix">
+                        <div class="wrapper-comment-block">
+                            <div class="comment-block media">
+                                <div class="media-left">
+                                    <a class="container-img media-width-sm " href="">
+                                        <img ng-src="{{ user.avatar }}">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <p ng-if="user.status_message" ng-show="edit_status_message == ''">
+                                        “{{ user.status_message|splitStatusMessage }}”
+                                    </p>
+                                    <p ng-if="user.status_message" ng-show="edit_status_message != ''">
+                                        <input type="text" id="status_message" value="{{ user.status_message|splitStatusMessage }}" ng-enter="statusMessageNewValue()" ng-show="user.status_message != ''">
+                                        <style>
+                                            #status_message{
+                                                border: 1px solid red;
+                                            }
+                                        </style>
+                                    </p>
+                                    <p><b>&mdash; says {{ user.username }}</b></p>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="stats-table">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <div class="number-stats-table">
+                                        {{ user.last_seen|lastSeenDay }} <sup>{{ user.last_seen|lastSeenMonth }}</sup>
+                                    </div>
+                                    <div>
+                                        Last seen
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="number-stats-table">
+                                        {{ user.num_likes }}
+                                    </div>
+                                    <div ng-if="user.gender=='M'">
+                                        Liked him
+                                    </div>
+                                    <div ng-if="user.gender=='F'">
+                                        Liked her
+                                    </div>
+                                    <div ng-if="user.gender=='U'">
+                                        Likes
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- /.stats-table tbody tr -->
+                            <tr>
+                                <td>
+                                    <div class="number-stats-table">
+                                        {{ followers.length }}
+                                    </div>
+                                    <div>
+                                        Followers
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="number-stats-table">
+                                        {{ following.length }}
+                                    </div>
+                                    <div>
+                                        Following
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- /.stats-table tbody tr -->
+                            </tbody>
+                            <!-- /.stats-table tbody -->
+                        </table>
+                        <!-- /.stats-table -->
+                    </div>
+                    <!-- /.content-sidebar-right.clearfix -->
+                </div>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">My Ratings</h4>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right sidebar-show-love clearfix">
+                        <p>How people feel about you {{ user.username }}?</p>
+
+                        <div class="rating-block">
+                            <div class="rating-block-left">
+                                <div class="rating-block-per-number">
+                                    {{ user.vote }}<span class="rating-block-per">%</span>
+                                </div>
+                                Out of {{ user.num_voted }} votes
+                            </div>
+                            <div class="rating-block-right table-icon-color-smile-up active">
+                                <i class="icon icon-smile-o"></i>
+                            </div>
+                        </div>
+                        <p>With a rating of <b>{{ user.vote }}%</b> out of {{ user.num_voted }} votes, you’re a <b>very popula model</b>. <!--You have
+                            had more than <b>67 amazing reprezentations</b>. --></p>
+                    </div>
+                    <!-- /.content-sidebar-right.sidebar-show-love.clearfix -->
+                </div>
+                <footer class="panel-footer">
+                    <a href="/people" class="btn btn-default">Find more people to chat with</a>
+                </footer>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">More like {{ user.username }}</h4>
+                </header>
+                <div class="panel-body">
+                    <ul class="basic-grid list-unstyled">
+                        <li ng-repeat="sUser in similarUsers">
+                            <a href="/profile/{{ sUser.user_id }}" class="container-img media-width-lg">
+                                <img src="{{ sUser.avatar }}">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/people/morelike/{{ user.user_id }}" class="btn-add pos-left media-width-lg">
+                                <span class="container-img"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<!-- /.container.clearfix -->
+
+<!-- Modal -->
+<div class="modal fade" id="photoModal" data-backdrop="false" tabindex="-1" role="dialog"
+     aria-labelledby="photoModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit avatar</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class='panel-body' ng-show="uploadResult.previewReady">
+                    <p>Your avatar:</p>
+                    <img class="future-avatar" src="{{ uploadResult.url }}" alt="...">
+                </div>
+                <div class="panel-body" oi-file="options">
+
+                    <div class="upload-basket upload-basket-content">
+                        <p class="upload-basket-lead-title"><b>Drag</b> your image in this box or</p>
+                        <button class="btn btn-primary" id="browse">Browse for image</button>
+                    </div>
+
+                </div>
+
+
+                <!-- /question image -->
+                <input type="file" oi-file="options" style="display:none;" id="uploader" name="file">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearAvatar()">Close
+                </button>
+                <button type="button" class="btn btn-primary" ng-click="uploadAvatar()">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

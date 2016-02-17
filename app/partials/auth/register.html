@@ -1,0 +1,107 @@
+<div class="landing">
+    <div class="wrapper-landing">
+        <div class="all-landing">
+            <div class="landing-width">
+                <ng-include src="'/app/partials/auth/includes/header.html'"></ng-include>
+                <!-- /.header-landing -->
+                <div class="content-landing" ng-show="state == 'step1' || state == 'step2'">
+                    <div class="wrap-column-content-landing">
+                        <div class="column-content-landing">
+                            <h4>It's great to see you signing up!</h4>
+
+                            <p>After registering you will be able to enjoy the complete Txtprt experience. To begin,
+                                please
+                                provide an email address and a username of your choice.</p>
+                        </div>
+                        <div class="column-content-landing">
+                            <h4 ng-show="state == 'step1'">Register with your email</h4>
+
+                            <h4 ng-show="state == 'step2'">Choose a password</h4>
+
+                            <form ng-submit="submitForm()" class="form-landing" name="forms.signupForm">
+                                <div ng-show="state == 'step1'">
+                                    <div class="form-group has-top-16">
+                                        <input class="form-control" type="email" ng-model="signup.email"
+                                               placeholder="Email Address">
+                                        <label class="errors.email" ng-show="errors.email"
+                                               ng-repeat="error in errors.email"
+                                               style="display: block; margin-top: 10px; margin-bottom: 0px">
+                                            {{ error }}
+                                        </label>
+                                    </div>
+                                    <div class="form-group has-top-16">
+                                        <input class="form-control" type="text" ng-model="signup.username"
+                                               placeholder="Username ">
+                                        <label class="errors.username" ng-show="errors.username"
+                                               ng-repeat="error in errors.username"
+                                               style="display: block; margin-top: 10px; margin-bottom: 0px">
+                                            {{ error }}
+                                        </label>
+                                    </div>
+                                    <div class="form-group has-top-16">
+                                        <a class="btn btn-link" href="/login">Cancel</a>
+                                        <button type="button" ng-click="step2()"
+                                                class="btn btn-primary pos-right">Continue
+                                        </button>
+                                    </div>
+                                </div>
+                                <div ng-show="state == 'step2'">
+
+                                    <div class="form-group has-top-16">
+                                        <input class="form-control" ng-model="signup.password" type="password"
+                                               placeholder="Password">
+                                        <label class="errors.password" ng-show="errors.password"
+                                               ng-repeat="error in errors.password"
+                                               style="display: block; margin-top: 10px; margin-bottom: 0px">
+                                            {{ error }}
+                                        </label>
+                                    </div>
+                                    <div class="form-group has-top-16">
+                                        <input class="form-control" type="password" ng-model="signup.password1"
+                                               placeholder="Confirm Password ">
+                                        <label class="errors.password1" ng-show="errors.password1"
+                                               ng-repeat="error in errors.password1"
+                                               style="display: block; margin-top: 10px; margin-bottom: 0px">
+                                            {{ error }}
+                                        </label>
+                                    </div>
+                                    <div class="form-group has-top-16">
+                                        <a class="btn btn-link" href="/login">Cancel</a>
+                                        <button type="submit"
+                                                class="btn btn-primary pos-right">Continue
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.column-content-landing -->
+                    </div>
+                    <!-- /.wrap-column-content-landing -->
+                    <footer class="footer-content-landing">
+                        <p>By authenticating and signing up you indicate that you have read and agree to the <span>Terms of Service.</span>
+                        </p>
+                    </footer>
+                </div>
+
+                <div class="content-landing" ng-show="state == 'register_success'">
+                    <div class="wrap-column-content-landing confirmation">
+                        <h2>Thank you for registering!</h2>
+
+                        <h3>Please confirm your email</h3>
+
+                        <p>A confirmation email has been sent to <a href ng-bind="signup.email"></a>. <br> Please follow
+                            the
+                            instructions to confirm your email and continue using Txtprt.</p>
+
+                        <p>Didn't receive your email? Make sure you check your spam folder.</p>
+                        <button class="btn btn-info" ng-click="resend_email()">Resend confirmation email</button>
+                    </div>
+                    <!-- /.content-landing -->
+                    <p class="text-bottom-landing">Chat with experts about anything</p>
+                </div>
+                <!-- /.landing-width -->
+            </div>
+            <!-- /.all-landing -->
+        </div>
+        <ng-include src="'/app/partials/auth/includes/footer.html'"></ng-include>
+    </div>

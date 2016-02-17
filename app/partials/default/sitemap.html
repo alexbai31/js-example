@@ -1,0 +1,159 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<link href="http://glyphsearch.com/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <ng-include src="'/app/partials/default/includes/explore-nav.html'"></ng-include>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary" href="/question/ask"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <section class="panel panel-default">
+            <header class="panel-heading">
+                <h4 class="panel-title">Sitemap</h4>
+            </header>
+            <div class="panel-body">
+                <div class="row row-margin">
+                    <div class="sitemap-block col-4">
+                        <h3 class="sitemap-title active">
+                            Explore
+                        </h3>
+                        <ul>
+                            <li class="active">
+                                <a href="/">Questions &amp; Answers</a>
+                            </li>
+                            <li>
+                                <a href="/people">People</a>
+                            </li>
+                            <li>
+                                <a href="/topics">Topics</a>
+                            </li>
+                        </ul>
+                        <!-- / .sitemap-block ul -->
+                    </div>
+                    <div class="sitemap-block col-4">
+                        <h3 class="sitemap-title">
+                            Chats
+                        </h3>
+                        <ul>
+                            <li>
+                                <a href="/conversations">All chats</a>
+                            </li>
+                            <li>
+                                <a href="/conversations/favorites">Favorites</a>
+                            </li>
+                        </ul>
+                        <!-- / .sitemap-block ul -->
+                    </div>
+                    <div class="sitemap-block col-4">
+                        <h3 class="sitemap-title">
+                            Contacts
+                        </h3>
+                        <ul>
+                            <li>
+                                <a href="/contacts">Recent</a>
+                            </li>
+                            <li>
+                                <a href="/contacts">Following</a>
+                            </li>
+                            <li>
+                                <a href="/contacts">Followers</a>
+                            </li>
+                        </ul>
+                        <!-- / .sitemap-block ul -->
+                    </div>
+                    <div class="sitemap-block col-4">
+                        <h3 class="sitemap-title">
+                            Profile
+                        </h3>
+                        <ul>
+                            <li>
+                                <a href="/profile/{{ currentUser }}">View profile</a>
+                            </li>
+                            <li>
+                                <a href="/profile/edit">Edit profile</a>
+                            </li>
+                            <li>
+                                <a href="">Referrals</a>
+                            </li>
+                            <li>
+                                <a href="profile/certification">Certifications</a>
+                            </li>
+                        </ul>
+                        <!-- / .sitemap-block ul -->
+                    </div>
+                    <div class="sitemap-block col-4">
+                        <h3 class="sitemap-title">
+                            Credits
+                        </h3>
+                        <ul>
+                            <li>
+                                <a href="/credit-packages">Buy credits</a>
+                            </li>
+                            <li>
+                                <a href="/statements-earnings">Statements</a>
+                            </li>
+                            <li>
+                                <a href="/withdrawals">Withdrawals</a>
+                            </li>
+                            <li>
+                                <a href="/payment-settings">Payment preferences</a>
+                            </li>
+                        </ul>
+                        <!-- / .sitemap-block ul -->
+                    </div>
+                    <div class="sitemap-block col-4">
+                        <h3 class="sitemap-title">
+                            Settings
+                        </h3>
+                        <ul>
+                            <li>
+                                <a href="/chat-settings">Chat settings</a>
+                            </li>
+                            <li>
+                                <a href="/general-settings">General Settings</a>
+                            </li>
+                        </ul>
+                        <!-- / .sitemap-block ul -->
+                    </div>
+                    <div class="sitemap-block col-4">
+                        <h3 class="sitemap-title">
+                            Txtprt
+                        </h3>
+                        <ul>
+                            <li>
+                                <a href="">About us</a>
+                            </li>
+                            <li>
+                                <a href="">Contact us</a>
+                            </li>
+                            <li>
+                                <a href="/terms-and-conditions">Terms &amp; conditions</a>
+                            </li>
+                            <li>
+                                <a href="/privacy-policy">Privacy policy</a>
+                            </li>
+                        </ul>
+                        <!-- / .sitemap-block ul -->
+                    </div>
+                </div>
+                <!-- / .sitemap-wrap -->
+            </div>
+        </section>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

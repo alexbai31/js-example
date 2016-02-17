@@ -1,0 +1,297 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+
+<!-- /.main-layout-header -->
+<main class="container">
+
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <ng-include src="'/app/partials/default/includes/explore-nav.html'"></ng-include>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <button class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</button>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <h4 class="panel-title">About {{ topic.name }}</h4>
+                    </header>
+                    <div class="panel-body">
+                        <p><img class="img-responsive" ng-src="{{ topic.cover_image }}" ng-if="topic.cover_image"></p>
+
+                        <p ng-if="!topic.is_location">{{ topic.description }}</p>
+
+                        <p ng-if="topic.is_location" class="map">
+                            <ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>
+                        </p>
+                    </div>
+                    <footer class="panel-footer row-position discussions-bottom-content">
+                        <a href="#" class="btn btn-sm btn-default" ng-if="!topic.is_following" ng-click="followTopic()">Follow<span
+                                class="btn-count">{{ topic.num_followers | nFormatter }}</span></a>
+                        <a href="#" class="btn btn-sm btn-primary" ng-if="topic.is_following"
+                           ng-click="unfollowTopic()">Unfollow<span
+                                class="btn-count">{{ topic.num_followers | nFormatter }}</span></a>
+                        <a href="/question/ask/topic/{{ topic.id }}">Ask a question</a>
+                        <a href="/questions/top/topic/{{ topic.id }}">Top stories</a>
+
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle dropdown-link">
+                                <span>Share <b>{{ topic.sharings }}</b></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-top dropdown-menu-left dropdown-menu-angle dropdown-menu-top">
+                                <li>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ encodedBaseURL }}/topic/{{ topic.id }}"
+                                       tabindex="-1" ng-click="increaseTopicSharings($event, topic, 'F')">
+                                        <i class="icon icon-facebook"></i> Facebook</a></li>
+                                <li>
+                                    <a href="https://twitter.com/intent/tweet?text=Check%20out%20the%20question%20{{ encodedBaseURL }}/topic/{{ topic.id }}"
+                                       tabindex="-1" ng-click="increaseTopicSharings($event, topic, 'T')">
+                                        <i class="icon icon-twitter"></i> Twitter</a></li>
+                                <li>
+                                    <a href="https://www.linkedin.com/shareArticle?url={{ encodedBaseURL }}/topic/{{ topic.id }}&summary=Check%20out%20the%20question"
+                                       tabindex="-1" ng-click="increaseTopicSharings($event, topic, 'L')">
+                                        <i class="icon icon-linkedin"></i> LinkedIn</a></li>
+                                <li>
+                                    <a href="mailto:?subject=Check%20out%20the%20question-{{ encodedBaseURL }}/topic/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseTopicSharings($event, topic, 'E')">
+                                        <i class="icon icon-envelope"></i> Email</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-top.dropdown-menu-left.dropdown-menu-angle dropdown-menu-top -->
+                        </div>
+
+
+                        <div class="dropdown dropdown-dots">
+                            <a href="#" class="dropdown-toggle dropdown-link">
+                                <i class="icon icon-ellipsis-h"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-angle dropdown-menu-top dropdown-menu-right">
+                                <li><a href="#" tabindex="-1">Get notifications</a></li>
+                                <li><a href="#" tabindex="-1">Suggest edit</a></li>
+                                <li><a href="#" tabindex="-1">Report</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-angle dropdown-menu-top.dropdown-menu-right -->
+                        </div>
+                        <!-- /.dropdown.dropdown-dots -->
+                    </footer>
+                </section>
+                <div class="answer-comment">
+                    <div class="col-answer-comment">{{ topic.name }} Top Stories</div>
+                </div>
+                <!-- /.answer-comment -->
+                <section class="panel panel-default" ng-repeat="question in topStories"
+                         ng-if="question.reports_count < 10">
+                    <header class="panel-heading clearfix">
+                        <a href="" class="btn btn-chat pos-right"><i class="icon icon-comments"></i></a>
+                        <h4 class="panel-title question-title"><a
+                                href="/question/{{ question.id }}">{{ question.title }}</a></h4>
+
+                        <p class="by-text-style">
+                            <a href="/profile/{{ question.user.user_id }}" class="img-thumbnail avatar-small media-width-sm-comments">
+                                <img ng-src="{{ question.user.avatar }}">
+                            </a>
+                            Asked by <a href="/profile/{{ question.user.user_id }}" class="name">{{ question.user.username }}</a> on
+                            {{ question.created_date | date:'MMM d'}}
+                        </p>
+                        <!-- /.by-text-style -->
+                    </header>
+                    <div class="panel-body">
+                        <p class="question-image question-image-{{ question.id }}" ng-if="question.image">
+                            <img ng-src="{{ question.image }}" alt="">
+                        </p>
+
+                        <p>
+
+                            <span class="text-{{ question.id }}">
+
+                                {{ question.details | htmlToPlainText | cutText }}<span class="tail-{{ question.id }}"
+                                                                                        style="display:none">{{ question.details | htmlToPlainText | tail }}</span>
+                            </span>
+                            <a href=""
+                               ng-click="showTail(question)"
+                               ng-if="!fullDetails[question.id] && question.details.length > 300"><b>Expand</b></a>
+                            <a href=""
+                               ng-click="showTail(question)"
+                               ng-if="fullDetails[question.id] && question.details.length > 300"><b>Hide</b></a>
+
+                        </p>
+
+                        <p class="by-text-style" ng-if="question.has_answers">
+                            <a href="#" class="img-thumbnail avatar-small media-width-sm-comments">
+                                <img ng-src="{{ question.last_answered_by.avatar }}">
+                            </a>
+                            Answered by <a href="/profile/{{ question.last_answered_by.user_id }}"
+                                           class="by-black-text"><b>{{ question.last_answered_by.username }} </b></a>
+                            and {{ question.answer_count - 1 }} more
+                            on {{ question.last_answered_date | date:'MMM d'}}
+                        </p>
+                        <!-- /.by-text-style -->
+                    </div>
+                    <footer class="panel-footer row-position discussions-bottom-content">
+                        <a href="javascript:void(0)" ng-if="!question.is_liked_by_me" ng-click="likeQuestion(question)">Upvote</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary" ng-if="question.is_liked_by_me">Upvoted<span
+                                class="btn-count"
+                                ng-if="question.likes_count > 0">{{ question.likes_count }}</span></a>
+                        <a href="javascript:void(0)" ng-if="!question.is_disliked_by_me"
+                           ng-click="dislikeQuestion(question)">Downvote</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary" ng-if="question.is_disliked_by_me">Downvoted<span
+                                class="btn-count"
+                                ng-if="question.dislikes_count > 0">{{ question.dislikes_count }}</span></a>
+
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle dropdown-link">
+                                <span>Share <b>{{ question.sharings }}</b></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-top dropdown-menu-left dropdown-menu-angle dropdown-menu-top">
+                                <li>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'F')"><i
+                                            class="icon icon-facebook"></i> Facebook</a></li>
+                                <li>
+                                    <a href="https://twitter.com/intent/tweet?text=Check%20out%20the%20question%20{{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'T')"><i
+                                            class="icon icon-twitter"></i> Twitter</a></li>
+                                <li>
+                                    <a href="https://www.linkedin.com/shareArticle?url={{ encodedBaseURL }}/question/{{ question.id }}&summary=Check%20out%20the%20question"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'L')"><i
+                                            class="icon icon-linkedin"></i> LinkedIn</a></li>
+                                <li>
+                                    <a href="mailto:?subject=Check%20out%20the%20question-{{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'E')"><i
+                                            class="icon icon-envelope"></i> Email</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-top.dropdown-menu-left.dropdown-menu-angle dropdown-menu-top -->
+                        </div>
+                        <!-- /.dropdown.dropdown-inline -->
+                        <div class="dropdown dropdown-dots">
+                            <a href="#" class="dropdown-toggle dropdown-link">
+                                <i class="icon icon-ellipsis-h"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-angle dropdown-menu-top dropdown-menu-right">
+                                <li><a href="#" tabindex="-1">Get notifications</a></li>
+                                <li><a href="/question/{{ question.id }}/edit" tabindex="-1">Suggest edit</a></li>
+                                <li><a href="#" tabindex="-1" data-toggle="modal" data-target="#reportModal"
+                                       ng-click="reportPrepare(question)">Report</a>
+                                </li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-angle dropdown-menu-top.dropdown-menu-right -->
+                        </div>
+                        <!-- /.dropdown.dropdown-dots -->
+                    </footer>
+                </section>
+                <!--  /.panel -->
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content-->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Top Experts</h4>
+                </header>
+                <ul class="list-group list-unstyled">
+                    <li class="list-group-item media" ng-repeat="expert in experts">
+                        <div class="media-left avatar-container">
+                            <div class="is-online"
+                                 ng-class="{online:(expert.online_status == 'online'), offline:(expert.online_status == 'offline')}">
+
+                            </div>
+                            <a href="/profile/{{ expert.user_id }}" class="container-img media-width-lg">
+                                <img src="{{ expert.avatar }}">
+                            </a>
+                        </div>
+                        <div class="media-body vertical-media-body">
+                            <h4 class="media-heading media-heading-small"><a
+                                    href="/profile/{{ expert.user_id }}">{{ expert.username }}</a> <i
+                                    class="icon icon-shield shield-color"></i>
+                            </h4>
+
+                            <p>
+                                <a class="btn btn-sm btn-chat" href="/chat/{{ expert.user_id }}"><i
+                                        class="icon icon-comments"></i></a>
+                                <span class="by-text-style" ng-if="expert.msg_cost > 0">&nbsp;{{ expert.msg_cost }} / msg.</span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Open Questions</h4>
+                </header>
+                <ul class="list-group list-unstyled questions-list">
+                    <li class="list-group-item" ng-repeat="question in openQuestions">
+                        <p><a href="/question/{{ question.id }}">{{ question.title }}: {{ question.details | cutText }}
+                            (continue)</a></p>
+
+                        <div class="by-text-style">
+                            Asked by <b class="name">{{ question.user.username }}</b>
+                        </div>
+                    </li>
+                </ul>
+                <footer class="panel-footer">
+                    <a href="/questions/open/topic/{{ topic.id }}" class="btn btn-link">More open questions</a>
+                </footer>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Similar topics</h4>
+                </header>
+                <ul class="list-group list-unstyled">
+                    <li class="list-group-item media" ng-repeat="sTopic in similarTopics">
+                        <div class="media-left">
+                            <a href="/topic/{{ sTopic.id }}" class="container-img media-width-sm">
+                                <img ng-src="{{ sTopic.image_thumb }}" alt="">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading media-heading-small"><a
+                                    href="/topic/{{ sTopic.id }}">{{ sTopic.name }}</a></h4>
+
+                            <p class="by-text-style">Followed by {{ sTopic.num_followers }} people</p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Topic followers</h4>
+                </header>
+                <div class="panel-body">
+                    <ul class="basic-grid list-unstyled">
+                        <li ng-repeat="follower in topicFollowers">
+                            <a href="/profile/{{ follower.user_id }}" class="container-img media-width-lg">
+                                <img ng-src="{{ follower.avatar }}">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/people/topic/{{ topic.id }}" class="btn-add pos-left media-width-lg">
+                                <span class="container-img"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main><!-- /.container clearfix -->
+
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>
+
+<ng-include src="'/app/partials/default/includes/report-modal.html'"></ng-include>

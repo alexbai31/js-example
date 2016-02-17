@@ -1,0 +1,149 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<!-- /.main-layout-header -->
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <div class="list-group">
+            <h6 class="list-group-title">EXPLORE</h6>
+            <a href="/conversations" class="list-group-item active">Conversations <i
+                    class="icon icon-chevron-right"></i></a>
+            <a href="/conversations/favorites" class="list-group-item">Favorites <i
+                    class="icon icon-chevron-right"></i></a>
+        </div>
+        <nav class="nav-groups">
+            <h6 class="list-group-title">Tools</h6>
+            <ul>
+                <li>
+                    <a href="choose-package.html"><i class="icon icon-dollar"></i>Buy Credits</a>
+                    <span class="text-badge">680</span>
+                </li>
+                <li><a href="statements-earnings.html"><i class="icon icon-clipboard"></i>Statements</a></li>
+                <li><a href="withdrawals.html"><i class="icon icon-wallet"></i>Withdrawals</a></li>
+                <li><a href="payment-methods.html"><i class="icon icon-credit-card"></i>Payment Preferences</a></li>
+                <li class="divider"><a href="chat-settings.html"><i class="icon icon-comment-ellipsis"></i>Chat Settings</a>
+                </li>
+                <li><a href="general-settings.html"><i class="icon icon-settings"></i>General Settings</a></li>
+                <li class="divider"><a href=""><i class="icon icon-info-circle"></i>About Us</a></li>
+                <li><a href="contact.html"><i class="icon icon-envelope"></i>Contact Us</a></li>
+                <li><a href="terms.html"><i class="icon icon-documents"></i>Terms and Conditions</a></li>
+                <li><a href="privacy.html"><i class="icon icon-flag"></i>Privacy Policy</a></li>
+                <li><a href="sitemap.html"><i class="icon icon-sitemap"></i>Sitemap</a></li>
+                <li><a href=""><i class="icon icon-close-circle"></i>Logout</a></li>
+            </ul>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <button class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</button>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <ul class="list-group list-unstyled">
+                        <li class="list-group-item media" ng-repeat=" chat in chatList">
+
+
+                            <div class="media-left avatar-container">
+                                <div class="is-online"
+                                     ng-class="{online:(chat.to_user.online_status == 'online'), offline:(chat.to_user.online_status == 'offline')}">
+                                </div>
+                                <a href="/profile/{{ chat.to_user.user_id }}" class="container-img media-width-list-lg">
+                                    <img src="{{ chat.to_user.avatar }}">
+                                </a>
+                            </div>
+                            <div class="media-body vertical-media-body">
+                                <h4 class="media-heading">
+                                    <a href="/profile/{{ chat.to_user.user_id }}">
+                                        {{ chat.to_user.username }}
+                                    </a>
+
+                                    <i class="icon icon-shield shield-color" ng-if="chat.to_user.is_expert"></i>
+                                    <span class="data" ng-if="chat.last_message">{{ chat.last_message.month|getNameMonth }} {{ chat.last_message.day }}, {{ chat.last_message.year }}</span>
+                                </h4>
+
+                                <p class="media-excerpt"><span class="new"
+                                                               ng-if="chat.unread_count > 0">{{ chat.unread_count }} New</span><b
+                                        ng-if="chat.unread_count > 0">{{ chat.last_message.content | cutMessage }}</b>
+                                    <span ng-if="chat.unread_count == 0">{{ chat.last_message.content | cutMessage }}</span>
+                                </p>
+                            </div>
+                            <div class="media-right">
+                                <a class="btn btn-chat" href="/chat/{{ chat.to_user.user_id }}"><i
+                                        class="icon icon-comments"></i></a>
+                            </div>
+
+
+                        </li>
+
+                    </ul>
+                </section>
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Top Experts</h4>
+                </header>
+                <ul class="list-group list-unstyled">
+                    <li class="list-group-item media" ng-repeat="expert in chatExpertList">
+                        <div class="media-left avatar-container">
+                            <div class="is-online"
+                                 ng-class="{online:(expert.online_status == 'online'), offline:(expert.online_status == 'offline')}">
+                            </div>
+                            <a href="/profile/{{ expert.user_id }}" class="container-img media-width-lg">
+                                <img src="{{ expert.avatar }}">
+                            </a>
+                        </div>
+                        <div class="media-body vertical-media-body">
+                            <h4 class="media-heading media-heading-small"><a href="/profile/{{ expert.user_id }}">Expert's {{ expert.username }}</a>
+                                <i
+                                        class="icon icon-shield shield-color"></i></h4>
+
+                            <p>
+                                <a class="btn btn-sm btn-chat" href="/chat/{{ expert.user_id }}"><i
+                                        class="icon icon-comments"></i></a>
+                                <span class="by-text-style">&nbsp;{{ expert.num_followers }} followers</span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Discover new people</h4>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right clearfix">
+                        <div class="sidebar-right-img">
+                            <div class="container-img container-img-circle">
+                                <img src="images/sidebar-right-img2.jpg">
+                            </div>
+                            <!-- /.container-img.container-img-circle -->
+                        </div>
+                        <!-- /.sidebar-right-img -->
+                        <p>Our community is full of amazing people. Browse some of our profile recommendations.</p>
+                    </div>
+                    <!-- /.content-sidebar-right.clearfix -->
+                </div>
+                <footer class="panel-footer">
+                    <a class="btn btn-default" href="people.html">Browse people</a>
+                </footer>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<!-- /.container.clearfix -->
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

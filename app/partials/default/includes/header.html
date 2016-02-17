@@ -1,0 +1,120 @@
+<div class="notification" ng-repeat="event in eventsList">
+    <div class="panel panel-default">
+        <header class="panel-heading">
+            <h4 class="panel-title">{{ event.sender }}</h4> {{ event.text_notification }}
+        </header>
+        <a href="" ng-click="readEvent(event)" class="close-notification"><i class="icon icon-close"></i></a>
+    </div>
+</div>
+<div class="wrapper">
+    <script>
+        $(document).ready(function () {
+            var colFun = -1;
+            $('.button-mobile').click(function () {
+                if ($('.button-mobile').hasClass('open-menu')) {
+
+                    $('body').animate({
+                        'left': 0
+                    }, 600, function () {
+                        $('.wrapper').width('auto');
+                        $('.wrapper').css({position: "relative"});
+                        $('.button-mobile').removeClass('open-menu');
+                        $('body').removeClass('open-menu-main');
+                    });
+                } else {
+                    $('.button-mobile').addClass('open-menu');
+                    var widthBody = $('body').width();
+                    var paddidingBody = widthBody - 60;
+                    $('.wrapper').width(widthBody);
+                    $('.wrapper').css({position: "initial"});
+                    $('body').addClass('open-menu-main').animate({
+                        'left': paddidingBody
+                    }, 600, function () {
+
+                        resizeBody();
+
+                    });
+                }
+            });
+
+            function resizeBody() {
+
+                colFun = colFun + 1;
+
+                if (colFun < 1) {
+
+                    $(window).resize(function () {
+
+                        if ($('.button-mobile').hasClass('open-menu')) {
+
+                            var widthBody = $('body').outerWidth();
+                            var paddidingBody = widthBody - 60;
+                            $('.wrapper').width(widthBody);
+                            $('body').css({
+                                'padding-left': paddidingBody
+                            })
+
+                        }
+                    });
+
+                }
+
+            }
+
+// END MENU MAIN
+
+
+        });
+    </script>
+    <header class="main-layout-header navbar" ng-controller="HeaderController">
+        <div class="layout-header container-fluid">
+            <div class="button-mobile">
+                <div class="button-mobile-line"></div>
+                <div class="button-mobile-line"></div>
+                <div class="button-mobile-line"></div>
+                <i class="icon icon-close"></i>
+            </div>
+            <a class="logo" href="/"><img src="/images/landing-logo.png" alt="Txtprt" height="35"></a>
+            <nav class="header-desktop-nav pos-left">
+                <ul>
+                    <li><a href="/"><i class="icon icon-globe"></i>Explore</a></li>
+                    <li><a href="/conversations"><i class="icon icon-comments-o"></i>Chats</a></li>
+                    <li><a href="/contacts"><i class="icon icon-user"></i>Contacts</a></li>
+                    <li><a href="/notifications"><i class="icon icon-bell"><span class="badge"
+                                                                                 ng-if="eventsCount > 0">{{ eventsCount }}</span></i></a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.header-desktop-nav pos-left -->
+            <div class="header-right">
+                <form class="search-header has-feedback">
+                    <input type="text" class="form-control" ng-model="queryString" placeholder="Search Txtprt..."
+                           ng-keypress="$event.which === 13?goToSearch():return;">
+                    <i class="icon icon-search form-control-feedback"></i>
+                </form>
+                <!-- /.search-header -->
+                <div class="dropdown dropdown-inline custom-dropdown-panel">
+                    <a class="dropdown-toggle" href="/profile/{{ auth.user.user_id }}">
+                                <span class="container-img dropdown-img">
+                                <img ng-src="{{ auth.user.profile.avatar }}">
+                                </span><!-- /.dropdown-img -->
+                    </a>
+                    <!-- /.dropdown-toggle -->
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li class="dropdown-link-header"><a
+                                href="/profile/{{ auth.user.user_id }}">{{ auth.user.username }}</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/profile/edit">Edit Profile</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/logout">Logout</a></li>
+                    </ul>
+                    <!-- /.dropdown-menu -->
+                </div>
+                <!-- /.dropdown.dropdown-inline -->
+                <a class="btn btn-primary" type="button" href="/question/ask">Ask a question</a>
+            </div>
+            <!-- /.header-right -->
+        </div>
+        <!-- /.layout-header -->
+    </header>
+    <!-- /.main-layout-header -->

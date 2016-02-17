@@ -1,0 +1,143 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <ng-include src="'/app/partials/default/includes/explore-nav.html'"></ng-include>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <button class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</button>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading clearfix">
+                        <a href="/people" class="btn btn-sm btn-primary pos-right">More people</a>
+                        <h4 class="panel-title">People results for <b>"{{ queryString }}"</b></h4>
+                    </header>
+                    <ul class="list-group list-unstyled">
+                        <li class="list-group-item media" ng-repeat="user in usersResults">
+                            <div class="media-left">
+                                <a href="/profile/{{ user.user_id }}" class="container-img media-width-sm">
+                                    <img src="{{ user.avatar }}">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading"><a href="/profile/{{ user.user_id }}">{{ user.username }}</a>
+                                </h4>
+                                <p class="by-text-style" ng-if="user.knows_about.length > 0">
+                                    <a class="shield-color"><b>{{ user.knows_about[0].name }}</b></a> <span
+                                        ng-if="user.knows_about.length > 1">&amp;</span>
+                                    <a href="/profile/{{ user.user_id }}/knowledge"
+                                       ng-if="user.knows_about.length > 1"><b>{{ user.knows_about.length - 1 }} more</b></a>
+                                </p>
+                            </div>
+                            <div class="media-right">
+                                <a href="javascript:void(0)" ng-click="followUser(user)" class="btn btn-default"
+                                   ng-if="!user.is_following && !isSelf(user)">Follow<span
+                                        class="btn-count">{{ user.num_followers }}</span></a>
+                                <a href="javascript:void(0)" class="btn btn-primary"
+                                   ng-if="user.is_following && !isSelf(user)">Following<span
+                                        class="btn-count">{{ user.num_followers }}</span></a>
+                            </div>
+                            <div class="media-content">
+                                <p class="small">{{ user.about_me }}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading clearfix">
+                        <a href="/topics" class="btn btn-sm btn-primary pos-right">More topics</a>
+                        <h4 class="panel-title">Topic results for <b>"{{ queryString }}"</b></h4>
+                    </header>
+                    <ul class="list-group list-unstyled">
+                        <li class="list-group-item media" ng-repeat="topic in topicsResults">
+                            <div class="media-left">
+                                <a href="/topic/{{ topic.id }}" class="container-img media-width-sm ">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading media-heading-small"><a
+                                        href="/topic/{{ topic.id }}">{{ topic.name }}</a></h4>
+                                <span class="by-text-style">{{ topic.num_followers }} followers. <a href=""
+                                                                                                    class="by-text-link"
+                                                                                                    ng-if="topic.is_following"
+                                                                                                    ng-click="unfollowTopic(topic)">Unfollow?</a>
+                        <a href="" class="by-text-link"
+                           ng-if="!topic.is_following" ng-click="followTopic(topic);">Follow</a>
+                                    </span>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section class="panel panel-default">
+                    <header class="panel-heading">
+                        <a href="/" class="btn btn-sm btn-primary pos-right">More questions</a>
+                        <h4 class="panel-title">Content results for <b>"{{ queryString }}"</b></h4>
+                    </header>
+                    <ul class="list-group list-unstyled">
+                        <li class="list-group-item" ng-repeat="question in questionsResults">
+                            <h4 class="panel-title question-title"><a
+                                    href="/question/{{ question.id }}">{{ question.title }}</a></h4>
+                            <p class="by-text-style">
+                                <a class="img-thumbnail media-width-sm-comments" href="#">
+                                    <img src="{{ question.user.avatar }}" style="width:20px;margin:5px;">
+                                </a>
+                                Asked by <a href="/profile/{{ question.user.user_id }}"
+                                            class="by-black-text"><b>{{ question.user.username }}</b></a> on
+                                {{ question.created_date | date:'MMM d, yyyy'}}<span ng-repeat="topic in question.topics">, <a
+                                    href="/topic/{{ topic.id }}"
+                                    class="by-black-text"><b>{{ topic.name }}</b></a></span>
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Asking great questions</h4>
+                </header>
+                <ul class="list-group list-unstyled wrapper-title-list">
+                    <li class="list-group-item">
+                        <div class="content-sidebar-right wrapper-title-list clearfix">
+                            <h4 class="title-list">Search first, ask second.</h4>
+                            <p>There’s always a chance other people had the same question as you. Try to <a href=""><b>search
+                                for answers</b></a> before asking the questions.</p>
+                            <h4 class="title-list">Keep your question clear and simple. </h4>
+                            <p>Use clear words and keep your question short. You can us the description to provide more
+                                details about your question.</p>
+                            <h4 class="title-list">Link to relevant topics.</h4>
+                            <p>Link your questions to as many topics as you see fit, as long as they are relevant. The
+                                more irrelevant topics you add, more people that won’t know the answer will see it,
+                                instead of those who can help you.</p>
+                            <h4 class="title-list">Use images as helpers.</h4>
+                            <p>Sometimes, an image is worth 1000 words. Add images to your questions in order to make
+                                your questions even clearer.</p>
+                        </div>
+                        <!-- /.content-sidebar-right.wrapper-title-list.clearfix -->
+                    </li>
+                </ul>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>

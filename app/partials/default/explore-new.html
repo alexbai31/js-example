@@ -1,0 +1,281 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <ng-include src="'/app/partials/default/includes/explore-nav.html'"></ng-include>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <a class="btn btn-primary" href="/question/ask"><i class="icon icon-pencil"></i> Ask a question</a>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <div class="panel margin-bottom content-wrapper clearfix">
+                    <div class="dropdown dropdown-line">
+                        <button type="button" class="btn btn-dropdown dropdown-toggle">
+                            <i class="icon icon-question-circle"></i> <span>{{ currentQuestionFilter }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-block dropdown-menu-block-style">
+                            <li><a href="#" tabindex="-1"
+                                   ng-click="deleteFilter('has_answers'); refreshQuestions(); currentQuestionFilter='All questions'">All
+                                questions</a></li>
+                            <li><a href="#" tabindex="-1"
+                                   ng-click="setFilter({has_answers: true}); refreshQuestions(); currentQuestionFilter='With answers'">With
+                                answers</a></li>
+                            <li><a href="#" tabindex="-1"
+                                   ng-click="setFilter({has_answers: false}); refreshQuestions(); currentQuestionFilter='Open questions'">Open
+                                questions</a></li>
+                        </ul>
+                        <!-- /.dropdown-menu.dropdown-menu-block.dropdown-menu-block-style -->
+                    </div>
+                    <!-- /.dropdown.dropdown-line -->
+                    <div class="dropdown dropdown-line">
+                        <button type="button" class="btn btn-dropdown dropdown-toggle">
+                            <i class="icon icon-eye"></i> <span>{{ currentTopicsFilter }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-block dropdown-menu-block-style">
+                            <li><a href="#" tabindex="-1"
+                                   ng-click="deleteFilter('topics'); refreshQuestions(); currentTopicsFilter='All topics'">All
+                                topics</a></li>
+                            <li><a href="#" tabindex="-1"
+                                   ng-click="setFilter({topics: myTopics}); refreshQuestions(); updateTopicsFilter('My topics')">My
+                                topics</a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-menu.dropdown-menu-block.dropdown-menu-block-style -->
+                    </div>
+                    <!-- /.dropdown.dropdown-line -->
+                    <div class="dropdown dropdown-line">
+                        <button type="button" class="btn btn-dropdown dropdown-toggle">
+                            <i class="icon icon-users"></i> <span>{{ currentPeopleFilter }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-block dropdown-menu-block-style">
+                            <li><a href="#" tabindex="-1"
+                                   ng-click="deleteFilter('from_following'); refreshQuestions(); currentPeopleFilter='Everyone'">Everyone</a>
+                            </li>
+                            <li><a href="#" tabindex="-1"
+                                   ng-click="setFilter({from_following: true}); refreshQuestions(); currentPeopleFilter='People I follow'">People
+                                I follow</a></li>
+                        </ul>
+                        <!-- /.dropdown-menu.dropdown-menu-block.dropdown-menu-block-style -->
+                    </div>
+                    <!-- /.dropdown.dropdown-line -->
+                </div>
+                <!-- /.margin-bottom -->
+                <section ng-repeat="question in questions.items" ng-if="question.reports_count < 10"
+                         class="panel panel-default question-section-{{ question.id }}">
+                    <header class="panel-heading clearfix">
+                        <a href="/chat/{{ question.user.user_id }}" class="btn btn-chat pos-right"><i class="icon icon-comments"></i></a>
+                        <h4 class="panel-title question-title"><a
+                                href="/question/{{ question.id }}">{{ question.title }}</a>
+                        </h4>
+
+                        <p class="by-text-style">
+                            <a href="/profile/{{ question.user.user_id }}" class="img-thumbnail avatar-small media-width-sm-comments">
+                                <img ng-src="{{ question.user.avatar }}">
+                            </a>
+                            Asked by <a href="/profile/{{ question.user.user_id }}"
+                                        class="by-black-text"><b>{{ question.user.username }}</b></a> on
+                            {{ question.created_date | date:'MMM d'}}
+                        </p>
+                        <!-- /.by-text-style -->
+                    </header>
+                    <div class="panel-body">
+
+                        <p class="question-image question-image-{{ question.id }}" ng-if="question.image">
+                            <img ng-src="{{ question.image }}" alt="">
+                        </p>
+
+                        <p>
+
+                            <span class="text-{{ question.id }}">
+
+                                {{ question.details | htmlToPlainText | cutText }}<span class="tail-{{ question.id }}"
+                                                                      style="display:none">{{ question.details | htmlToPlainText | tail }}</span>
+                            </span>
+                            <a href=""
+                               ng-click="showTail(question)" ng-if="!fullDetails[question.id] && question.details.length > 300"><b>Expand</b></a>
+                            <a href=""
+                               ng-click="showTail(question)" ng-if="fullDetails[question.id] && question.details.length > 300"><b>Hide</b></a>
+
+                        </p>
+
+                        <p class="by-text-style" ng-if="question.has_answers">
+                            <a href="/profile/{{ question.last_answered_by.user_id }}" class="img-thumbnail avatar-small media-width-sm-comments">
+                                <img ng-src="{{ question.last_answered_by.avatar }}">
+                            </a>
+                            Answered by <a href="/profile/{{ question.last_answered_by.user_id }}"
+                                           class="by-black-text"><b>{{ question.last_answered_by.username }} </b></a>
+                            and {{ question.answer_count - 1 }} more
+                            on {{ question.last_answered_date | date:'MMM d'}}
+                        </p>
+                        <!-- /.by-text-style -->
+                    </div>
+                    <footer class="panel-footer row-position discussions-bottom-content">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-default" ng-if="!question.answered_by_user"
+                           ng-click="answerFormOpen[question.id]=true;setCaret(question);">Answer</a>
+                        <a ng-href="/question/{{ question.id }}"
+                           ng-if="question.answered_by_user"><span>Answered&nbsp;</span><b>{{ question.answer_count }}</b></a>
+                        <a href="javascript:void(0)" ng-if="!question.is_liked_by_me" ng-click="likeQuestion(question)">Upvote</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary" ng-if="question.is_liked_by_me">Upvoted<span
+                                class="btn-count"
+                                ng-if="question.likes_count > 0">{{ question.likes_count }}</span></a>
+                        <a href="javascript:void(0)" ng-if="!question.is_disliked_by_me"
+                           ng-click="dislikeQuestion(question)">Downvote</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary" ng-if="question.is_disliked_by_me">Downvoted<span
+                                class="btn-count"
+                                ng-if="question.dislikes_count > 0">{{ question.dislikes_count }}</span></a>
+
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle dropdown-link">
+                                <span>Share <b>{{ question.sharings }}</b></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-top dropdown-menu-left dropdown-menu-angle dropdown-menu-top">
+                                <li>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'F')"><i
+                                            class="icon icon-facebook"></i> Facebook</a></li>
+                                <li>
+                                    <a href="https://twitter.com/intent/tweet?text=Check%20out%20the%20question%20{{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'T')"><i
+                                            class="icon icon-twitter"></i> Twitter</a></li>
+                                <li>
+                                    <a href="https://www.linkedin.com/shareArticle?url={{ encodedBaseURL }}/question/{{ question.id }}&summary=Check%20out%20the%20question"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'L')"><i
+                                            class="icon icon-linkedin"></i> LinkedIn</a></li>
+                                <li>
+                                    <a href="mailto:?subject=Check%20out%20the%20question-{{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'E')"><i
+                                            class="icon icon-envelope"></i> Email</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-top.dropdown-menu-left.dropdown-menu-angle dropdown-menu-top -->
+                        </div>
+                        <!-- /.dropdown.dropdown-inline -->
+                        <div class="dropdown dropdown-dots">
+                            <a href="#" class="dropdown-toggle dropdown-link">
+                                <i class="icon icon-ellipsis-h"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-angle dropdown-menu-top dropdown-menu-right">
+                                <li><a href="#" tabindex="-1">Get notifications</a></li>
+                                <li><a href="/question/{{ question.id }}/edit" tabindex="-1">Suggest edit</a></li>
+                                <li><a href="#" tabindex="-1" data-toggle="modal" data-target="#reportModal"
+                                       ng-click="reportPrepare(question)">Report</a>
+                                </li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-angle dropdown-menu-top.dropdown-menu-right -->
+                        </div>
+                        <!-- /.dropdown.dropdown-dots -->
+                    </footer>
+                    <div class="panel-body quick-answer" ng-show="answerFormOpen[question.id]">
+                        <h6>Write your answer:</h6>
+
+                        <form>
+                            <editor id="question.id" options="options" upload-result="uploadResult"
+                                    editor-model="answerForm[question.id].answerBody"></editor>
+                        </form>
+
+                    </div>
+                    <!-- /.quick-answer -->
+                    <footer class="panel-footer clearfix" ng-show="answerFormOpen[question.id]">
+                        <a class="btn btn-link-default pos-left" href="#" ng-click="answerFormOpen[question.id]=false">Cancel?</a>
+                        <button class="btn btn-primary pos-right" ng-click="createAnswer(question)" type="button">
+                            Publish
+                        </button>
+                    </footer>
+                </section>
+                <!--  /.panel -->
+            </div>
+            <!-- /.content-margin -->
+        </div>
+        <!-- /.content -->
+        <div class="right-360">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Hungry for knowledge?</h4>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right clearfix">
+                        <div class="sidebar-right-img">
+                            <div class="container-img container-img-circle">
+                                <img src="/images/sidebar-right-img1.jpg">
+                            </div>
+                            <!-- /.container-img.container-img-circle -->
+                        </div>
+                        <!-- /.sidebar-right-img -->
+                        <p>All you have to do is <b>ask the right question</b> and our wonderful community will help
+                            you out.</p>
+                    </div>
+                    <!-- /.content-sidebar-right.clearfix -->
+                </div>
+                <footer class="panel-footer">
+                    <a class="btn btn-default" href="/question/ask">Ask a question</a>
+                </footer>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Discover new people</h4>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right clearfix">
+                        <div class="sidebar-right-img">
+                            <div class="container-img container-img-circle">
+                                <img src="/images/sidebar-right-img2.jpg">
+                            </div>
+                            <!-- /.container-img.container-img-circle -->
+                        </div>
+                        <!-- /.sidebar-right-img -->
+                        <p>Our community is full of amazing people. Browse some of our profile recommendations.</p>
+                    </div>
+                    <!-- /.content-sidebar-right.clearfix -->
+                </div>
+                <footer class="panel-footer">
+                    <a class="btn btn-default" href="/people">Browse people</a>
+                </footer>
+            </section>
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <h4 class="panel-title">Explore new topics</h4>
+                </header>
+                <div class="panel-body">
+                    <div class="content-sidebar-right clearfix">
+                        <div class="sidebar-right-img">
+                            <div class="container-img container-img-circle">
+                                <img src="/images/sidebar-right-img3.jpg">
+                            </div>
+                            <!-- /.container-img.container-img-circle -->
+                        </div>
+                        <!-- /.sidebar-right-img -->
+                        <p>More topics, more knowledge. We’ve prepared a list of both popular and interesting
+                            topics.</p>
+                    </div>
+                    <!-- /.content-sidebar-right.clearfix -->
+                </div>
+                <footer class="panel-footer">
+                    <a class="btn btn-default" href="/topics">Browse topics</a>
+                </footer>
+            </section>
+        </div>
+        <!-- /.right-360 -->
+        <div style="clear:both"></div>
+    </section>
+    <!-- /.layout-row -->
+</main>
+<!-- /.container.clearfix -->
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>
+
+
+<ng-include src="'/app/partials/default/includes/report-modal.html'"></ng-include>

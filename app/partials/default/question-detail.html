@@ -1,0 +1,394 @@
+<ng-include src="'/app/partials/default/includes/header.html'"></ng-include>
+
+<main class="container">
+    <aside class="left-sidebar menu-mobile">
+        <form class="menu-mobile-search has-feedback left-control-feedback">
+            <input type="text" placeholder="Search">
+            <i class="icon icon-search form-control-feedback"></i>
+        </form>
+        <ng-include src="'/app/partials/default/includes/explore-nav.html'"></ng-include>
+        <!-- /.list-group -->
+        <nav class="nav-groups">
+            <ng-include src="'/app/partials/default/includes/tools-nav.html'"></ng-include>
+        </nav>
+        <!-- /.nav-groups-->
+        <div class="have-questions">
+            <p class="have-questions-title">Have questions?</p>
+
+            <p class="have-questions-content">Our experts are here to answer.</p>
+            <button class="btn btn-primary"><i class="icon icon-pencil"></i> Ask a question</button>
+        </div>
+    </aside>
+    <!-- /.sidebar -->
+    <section class="layout-row">
+        <div class="content content-360">
+            <div class="content-margin">
+                <section class="panel panel-default">
+                    <header class="panel-heading clearfix">
+                        <div class="media pos-left">
+                            <div class="media-left avatar-container">
+                                <div class="is-online"
+                                     ng-class="{online:(question.user.online_status == 'online'), offline:(question.user.online_status == 'offline')}">
+
+                                </div>
+                                <a href="/profile/{{ question.user.user_id }}" class="container-img media-width-sm"><img
+                                        ng-src="{{ question.user.avatar }}"
+                                        alt=""></a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading media-heading-small"><a
+                                        href="/profile/{{ question.user.user_id }}">{{ question.user.username }}</a>
+                                </h4>
+
+                                <p class="by-text-style">on <b class="by-black-text">
+                                    {{ question.created_date | date:'MMM d'}}</b> wanted to know</p>
+                            </div>
+                        </div>
+                        <a href="/chat/{{ question.user.user_id }}" class="btn btn-chat pos-right"><i class="icon icon-comments"></i></a>
+                        <a href="" class="btn btn-default pos-right" ng-click="answerFormOpen=true;">Answer</a>
+                    </header>
+                    <div class="panel-body">
+                        <h4 class="panel-title question-title">{{ question.title }}
+                        </h4>
+
+                        <p><img class="img-responsive" ng-src="{{ question.image }}" ng-if="question.image"></p>
+
+                        <p ng-bind-html="question.details"></p>
+                    </div>
+                    <footer class="panel-footer row-position discussions-bottom-content">
+                        <a href="" class="btn btn-sm btn-default" ng-click="answerFormOpen=true;">Answer</a>
+                        <a ng-click="scrollToAnswers()">Answers</a>
+                        <!-- layout bug: sharing goes up -->
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle dropdown-link">
+                                <span>Share <b>{{ question.sharings }}</b></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-top dropdown-menu-left dropdown-menu-angle dropdown-menu-top">
+                                <li>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseQuestionSharings($event, question, 'F')">
+                                        <i class="icon icon-facebook"></i> Facebook</a></li>
+                                <li>
+                                    <a href="https://twitter.com/intent/tweet?text=Check%20out%20the%20question%20{{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseQuestionSharings($event, question, 'T')">
+                                        <i class="icon icon-twitter"></i> Twitter</a></li>
+                                <li>
+                                    <a href="https://www.linkedin.com/shareArticle?url={{ encodedBaseURL }}/question/{{ question.id }}&summary=Check%20out%20the%20question"
+                                       tabindex="-1" ng-click="increaseQuestionSharings($event, question, 'L')">
+                                        <i class="icon icon-linkedin"></i> LinkedIn</a></li>
+                                <li>
+                                    <a href="mailto:?subject=Check%20out%20the%20question-{{ encodedBaseURL }}/question/{{ question.id }}"
+                                       tabindex="-1" ng-click="increaseQuestionSharings($event, question, 'E')">
+                                        <i class="icon icon-envelope"></i> Email</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-top.dropdown-menu-left.dropdown-menu-angle dropdown-menu-top -->
+                        </div>
+                        <!-- /.dropdown.dropdown-inline -->
+                        <div class="dropdown dropdown-dots">
+                            <a href="#" class="dropdown-toggle dropdown-link">
+                                <i class="icon icon-ellipsis-h"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-angle dropdown-menu-top dropdown-menu-right">
+                                <li><a href="#" tabindex="-1">Get notifications</a></li>
+                                <li><a href="/question/{{ question.id }}/edit" tabindex="-1">Suggest edit</a></li>
+                                <li><a href="#" tabindex="-1" data-toggle="modal" data-target="#reportModal"
+                                       ng-click="reportPrepare(question)">Report</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-angle dropdown-menu-top.dropdown-menu-right -->
+                        </div>
+                        <!-- /.dropdown.dropdown-dots -->
+                    </footer>
+                    <div class="panel-body quick-answer" ng-show="answerFormOpen">
+                        <h6>Write your answer:</h6>
+
+                        <form>
+                            <editor id="question.id" options="options" upload-result="uploadResult"
+                                    editor-model="answerForm.answerBody"></editor>
+                        </form>
+                        <!-- /form -->
+                    </div>
+                    <!-- /.quick-answer -->
+                    <footer class="panel-footer clearfix" ng-show="answerFormOpen">
+                        <a class="btn btn-link-default pos-left" href="#" ng-click="answerFormOpen=false;">Cancel?</a>
+                        <button class="btn btn-primary pos-right" type="button" ng-click="createAnswer(question)">
+                            Publish
+                        </button>
+                    </footer>
+                </section>
+                <div class="answer-comment">
+                    <div class="col-answer-comment">{{ question.answer_count }} Answers</div>
+
+                    <div class="pos-right comments-sort" style="position: relative; top:5px;">
+                        <a href="" ng-class="{'active': answersByDate}" ng-click="filterAnswersByDate();">by date</a>
+                        <a href="" ng-class="{'active': !answersByDate}" ng-click="filterAnswersByVotes();">by votes</a>
+                    </div>
+                </div>
+                <!-- /.answer-comment -->
+                <section class="panel panel-default popular-answer" id="answers" ng-repeat="answer in answers"
+                         emit-on-finish="">
+                    <header class="panel-heading clearfix" id="answer-{{ answer.id }}">
+                        <div class="media pos-left">
+                            <div class="media-left avatar-container">
+                                <div class="is-online"
+                                     ng-class="{online:(answer.author.online_status == 'online'), offline:(answer.author.online_status == 'offline')}">
+
+                                </div>
+                                <a href="/profile/{{ answer.author.user_id }}" class="container-img media-width-sm"><img
+                                        src="{{ answer.author.avatar }}"
+                                        alt=""></a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading media-heading-small"><a
+                                        href="/profile/{{ answer.author.user_id }}">{{ answer.author.username }}</a> <i
+                                        class="icon icon-shield shield-color" ng-if="answer.author.is_expert"></i></h4>
+
+                                <p class="by-text-style"><b><a href="/topic/{{ answer.author.knows_about[0].id }}"
+                                                               class="shield-color"
+                                                               ng-if="answer.author.is_expert">{{ answer.author.knows_about[0].name }}</a></b>
+                                </p>
+                            </div>
+                        </div>
+
+                        <a href="/chat/{{ answer.author.user_id }}" class="btn btn-chat pos-right" not-is-self="{{ answer.author.user_id }}"><i class="icon icon-comments"></i></a>
+                        <p class="by-text-style pos-right" ng-show="answer.id == favouriteAnswer.id"
+                           style="position:relative; top:5px;">
+                            Popular ({{ answer.likes_count }} upvotes)
+                        </p>
+                    </header>
+                    <div class="panel-body answer-body">
+                        <p ng-bind-html="answer.answer"></p>
+
+                        <div class="by-text-style">
+                            <p class="pos-left">Written on <b class="by-black-text">
+                                {{ answer.date | date:'MMM d' }}</b></p>
+
+                            <p ng-show="answer.id == favouriteAnswer.id" class="pos-right"><i
+                                    class="icon icon-star color-yellow"></i> Popular answer</p>
+                        </div>
+                        <!-- /.by-text-style -->
+                    </div>
+                    <footer class="panel-footer row-position discussions-bottom-content">
+                        <a href="#" class="btn btn-sm btn-primary" ng-show="answer.is_liked_by_me">Upvoted<span
+                                class="btn-count">{{ answer.likes_count }}</span></a>
+                        <a href="#" class="btn btn-sm"
+                           ng-class="{'btn-default': answer.likes_count > 0, 'btn-link': answer.likes_count == 0}"
+                           ng-click="likeAnswer(answer)"
+                           ng-show="!answer.is_liked_by_me">Upvote</a>
+                        <a href="#" class="btn btn-sm btn-primary" ng-show="answer.is_disliked_by_me">Downvoted<span
+                                class="btn-count">{{ answer.dislikes_count }}</span></a>
+                        <a href="#" class="btn btn-sm btn-link"
+                           ng-class="{'btn-default': answer.dislikes_count > 0, 'btn-link': answer.dislikes_count == 0}"
+                           ng-click="dislikeAnswer(answer)"
+                           ng-show="!answer.is_disliked_by_me">Downvote</a>
+                        <a href="#" class="btn btn-sm btn-link" ng-click="commentFormOpen=true;">Add a comment</a>
+
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle dropdown-link">
+                                <span>Share <b>{{ question.sharings }}</b></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-top dropdown-menu-left dropdown-menu-angle dropdown-menu-top">
+                                <li>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ encodedBaseURL }}/question/{{ question.id }}%23answer-{{ answer.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'F')"><i
+                                            class="icon icon-facebook"></i> Facebook</a></li>
+                                <li>
+                                    <a href="https://twitter.com/intent/tweet?text=Check%20out%20the%20question%20{{ encodedBaseURL }}/question/{{ question.id }}%23answer-{{ answer.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'T')"><i
+                                            class="icon icon-twitter"></i> Twitter</a></li>
+                                <li>
+                                    <a href="https://www.linkedin.com/shareArticle?url={{ encodedBaseURL }}/question/{{ question.id }}%23answer-{{ answer.id }}&summary=Check%20out%20the%20question"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'L')"><i
+                                            class="icon icon-linkedin"></i> LinkedIn</a></li>
+                                <li>
+                                    <a href="mailto:?subject=Check%20out%20the%20question-{{ encodedBaseURL }}/question/{{ question.id }}%23answer-{{ answer.id }}"
+                                       tabindex="-1" ng-click="increaseSharings($event, question, 'E')"><i
+                                            class="icon icon-envelope"></i> Email</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-top.dropdown-menu-left.dropdown-menu-angle dropdown-menu-top -->
+                        </div>
+
+                        <div class="dropdown dropdown-dots">
+                            <a href="#" class="dropdown-toggle dropdown-link">
+                                <i class="icon icon-ellipsis-h"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-angle dropdown-menu-top dropdown-menu-right">
+                                <li><a href="#" tabindex="-1">Get notifications</a></li>
+                                <li><a href="#" tabindex="-1">Suggest edit</a></li>
+                                <li><a href="#" tabindex="-1">Report</a></li>
+                            </ul>
+                            <!-- /.dropdown-menu.dropdown-menu-angle dropdown-menu-top.dropdown-menu-right -->
+                        </div>
+                        <!-- /.dropdown.dropdown-dots -->
+                    </footer>
+
+                    <div class="panel-body  quick-answer" ng-show="commentFormOpen">
+                        <div class="comment-body">
+                            <form>
+                                <editor id="comment.id" options="options" upload-result="uploadResult"
+                                        editor-model="commentForm[answer.id].commentBody"></editor>
+                            </form>
+                            <footer class="comment-footer clearfix">
+                                <button class="btn btn-primary pos-right publish-comment-button" type="button"
+                                        ng-disabled="pendingCommentRequest"
+                                        ng-click="commentAnswer(answer)">
+                                    Publish
+                                </button>
+                                <button class="btn btn-default pos-right publish-comment-button" type="button"
+                                        ng-click="commentForm[answer.id].commentBody = ''; commentFormOpen=false;">
+                                    Cancel
+                                </button>
+                            </footer>
+                        </div>
+                        <!-- /.textarea-answer -->
+                        </form>
+                        <!-- /form -->
+                    </div>
+                    <!-- /.quick-answer -->
+
+                    <header class="comments-heading clearfix" ng-if="answer.comments.length > 0">
+                        <h4 class="has-top-0 pos-left">{{ answer.comments.length }} Comments</h4>
+
+                        <div class="pos-right comments-sort">
+                            <a href="" ng-class="{'active': commentsByDate}" ng-click="filterByDate();">by date</a>
+                            <a href="" ng-class="{'active': !commentsByDate}" ng-click="filterByVotes();">by votes</a>
+                        </div>
+                    </header>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body" ng-if="answer.comments.length > 0">
+                        <div class="comment" ng-repeat="comment in answer.comments">
+                            <header class="comment-heading clearfix">
+                                <p class="by-text-style">
+                                    <a href="/profile/{{ comment.author.user_id }}"
+                                       class="img-thumbnail media-width-sm-avatar has-right-10">
+                                        <img ng-src="{{ comment.author.avatar }}">
+                                    </a>
+                                    <a href="/profile/{{ comment.author.user_id }}" class="name">{{ comment.author.username }}</a> on
+                                    {{ comment.date_created | date:"MMM d"}}
+                                </p>
+                            </header>
+                            <div class="comment-body">
+                                <p>{{ comment.body }}</p>
+                            </div>
+                            <footer class="comment-footer row-position discussions-bottom-content">
+                                <a href="" ng-click="replyFormOpen=true;">Reply</a>
+                                <a href="" class="engaged" ng-show="comment.is_liked_by_me">Upvoted
+                                    <b>{{ comment.likes_info }}</b></a>
+                                <a href="" ng-show="!comment.is_liked_by_me" ng-click="likeComment(comment)">Upvote</a>
+                                <a href="" class="engaged" ng-show="comment.is_disliked_by_me">Downvoted
+                                    <b>{{ comment.dislikes_info }}</b></a>
+                                <a href="" ng-show="!comment.is_disliked_by_me" ng-click="dislikeComment(comment)">Downvote</a>
+                                <a href="">Report</a>
+                            </footer>
+
+                            <div class="comment-body comment quick-answer" ng-show="replyFormOpen">
+                                <form>
+                                    <editor id="comment.id" options="options" upload-result="uploadResult"
+                                            editor-model="replyForm[comment.id].replyBody"></editor>
+                                </form>
+                                <!-- /form -->
+                            </div>
+
+                            <!-- /.quick-answer -->
+                            <footer class="comment-footer comment clearfix" ng-show="replyFormOpen">
+                                <a class="btn btn-link-default pos-left" href="#" ng-click="replyFormOpen=false;">Cancel?</a>
+                                <button class="btn btn-primary pos-right" type="button"
+                                        ng-disabled="pendingCommentRequest" ng-click="replyToComment(comment, answer);">
+                                    Publish
+                                </button>
+                            </footer>
+
+                            <div class="comment" ng-repeat="reply in comment.replies">
+                                <header class="comment-heading clearfix">
+                                    <p class="by-text-style">
+                                        <a href="/profile/{{ reply.author.user_id }}"
+                                           class="img-thumbnail media-width-sm-avatar has-right-10">
+                                            <img ng-src="{{ reply.author.avatar }}">
+                                        </a>
+                                        <a href="/profile/{{ reply.author.user_id }}" class="name">{{ reply.author.username }}</a> on
+                                        {{ reply.created_date | date: "MMM d" }}
+                                    </p>
+                                </header>
+                                <div class="comment-body">
+                                    <p ng-bind-html="reply.body"></p>
+                                </div>
+                                <footer class="comment-footer row-position discussions-bottom-content">
+                                    <a href="" ng-show="reply.is_liked_by_me">Upvoted <b>{{ reply.likes_info }}</b></a>
+                                    <a href="" ng-show="!reply.is_liked_by_me" ng-click="likeComment(reply)">Upvote</a>
+                                    <a href="" ng-show="reply.is_disliked_by_me">Downvoted
+                                        <b>{{ reply.dislikes_info }}</b></a>
+                                    <a href="" ng-show="!reply.is_disliked_by_me" ng-click="dislikeComment(reply)">Downvote</a>
+                                    <a href="">Report</a>
+                                </footer>
+                            </div>
+                            <!-- /.comment (second level) -->
+
+                        </div>
+                        <!-- /.comment (first level) -->
+
+                    </div>
+
+
+                </section>
+            </div>
+
+
+            <!--  /.panel -->
+        </div>
+        <!-- /.content-margin -->
+
+    </section>
+    <!-- /.content-->
+    <div class="right-360">
+        <section class="panel panel-default">
+            <header class="panel-heading">
+                <h4 class="panel-title">Question's topics</h4>
+            </header>
+            <ul class="list-group list-unstyled">
+                <li class="list-group-item media" ng-repeat="topic in question.topics">
+                    <div class="media-left">
+                        <a href="/topic/{{ topic.id }}" class="container-img media-width-sm">
+                            <img ng-src="{{ topic.image_thumb }}" ng-if="topic.image_thumb != ''" alt="">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading media-heading-small"><a
+                                href="/topic/{{ topic.id }}">{{ topic.name }}</a></h4>
+
+                        <p class="by-text-style">Followed by {{ topic.num_followers }} people</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+        <section class="panel panel-default" ng-if="(similarQuestions.length - 1) > 0">
+            <header class="panel-heading">
+                <h4 class="panel-title">Similar questions</h4>
+
+            </header>
+            <ul class="list-group list-unstyled questions-list">
+                <li class="list-group-item" ng-repeat="similarQuestion in similarQuestions"
+                    ng-if="similarQuestion.id != question.id">
+                    <p>
+                        <a href="/question/{{ similarQuestion.id }}">{{ similarQuestion.topics[0].name }}: {{ similarQuestion.title }}</a>
+                    </p>
+
+                    <div class="by-text-style">
+                        Asked by <b class="name">{{ similarQuestion.user.username }}</b>
+                    </div>
+                </li>
+            </ul>
+            <footer class="panel-footer">
+                <a href="explore-new.html" class="btn btn-link">More similar questions</a>
+            </footer>
+        </section>
+    </div>
+    <!-- /.right-360 -->
+    <div style="clear:both"></div>
+
+    <!-- /.layout-row -->
+</main>
+<!-- /.container clearfix -->
+
+<ng-include src="'/app/partials/default/includes/footer.html'"></ng-include>
+
+
+<ng-include src="'/app/partials/default/includes/report-modal.html'"></ng-include>
